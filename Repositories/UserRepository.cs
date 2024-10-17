@@ -12,6 +12,13 @@ public static class UserRepository
             Email = "youssefhammam77@gmail.com",
             Password = "1234",
             Address = "5 St Ismail Basha - El Sayeda Zeinab"
+        },
+        new User()
+        {
+            Username = "admin",
+            Email = "admin@admin.com",
+            Password = "1234",
+            Address = "5st Alexandria - Egypt"
         }
     ];
 

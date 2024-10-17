@@ -5,5 +5,7 @@ public class ShoppingCart
 
     public long UserId { get; set; }
 
-    public List<CartItem> Items { get; set; }
+    public List<CartItem> Items { get; set; } = new List<CartItem>();
+
+    public decimal TotalPrice { get; set; }
 }

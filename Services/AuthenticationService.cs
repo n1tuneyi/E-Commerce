@@ -10,7 +10,7 @@ public static class AuthenticationService
         return UserRepository.Create(user);
     }
 
-    public static User? Login(string username, string password)
+    public static User Login(string username, string password)
     {
         User? user = UserRepository.FindByUsername(username);
 
