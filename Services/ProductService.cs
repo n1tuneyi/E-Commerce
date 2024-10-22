@@ -22,7 +22,7 @@ public static class ProductService
 
     public static bool HasEnoughStock(long id, int requestedQuantity)
     {
-        int? quantityInCart = CartService.GetCartItems(ProgramManager.currentUser.Id)
+        int? quantityInCart = CartService.GetCartItems(UserRepository.currentUser.Id)
                                         ?.Find(item => item.ProductId == id)
                                         ?.Quantity;
 
@@ -46,23 +46,23 @@ public static class ProductService
         ProductRepository.Remove(productId);
     }
 
-    public static void ChangeName(long productId, string newName)
+    public static void UpdateName(long productId, string newName)
     {
         Product product = ProductRepository.FindById(productId);
         product.Name = newName;
     }
-    public static void ChangeDescription(long productId, string newDescription)
+    public static void UpdateDescription(long productId, string newDescription)
     {
         Product product = ProductRepository.FindById(productId);
         product.Description = newDescription;
     }
-    public static void ChangePrice(long productId, decimal newPrice)
+    public static void UpdatePrice(long productId, decimal newPrice)
     {
         Product product = ProductRepository.FindById(productId);
         product.Price = newPrice;
     }
 
-    public static void ChangeQuantity(long productId, int newQuantity)
+    public static void UpdateQuantity(long productId, int newQuantity)
     {
         Product product = ProductRepository.FindById(productId);
         product.StockQuantity = newQuantity;

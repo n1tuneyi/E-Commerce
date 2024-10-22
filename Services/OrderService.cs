@@ -25,4 +25,9 @@ public static class OrderService
 
         CartRepository.RemoveCart(cart);
     }
+
+    public static List<Order> GetOrders(long userID)
+    {
+        return OrderRepository.GetAll(userID);
+    }
 }

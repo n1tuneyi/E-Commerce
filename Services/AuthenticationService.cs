@@ -1,4 +1,4 @@
-﻿using Ecommerce.Domain;
+﻿using Ecommerce.Domain.Models;
 using Ecommerce.Repositories;
 
 namespace Ecommerce.Services;

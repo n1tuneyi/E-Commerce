@@ -1,4 +1,4 @@
-﻿namespace Ecommerce.Domain;
+﻿namespace Ecommerce.Domain.Models;
 public class ShoppingCart
 {
     public long Id { get; set; }

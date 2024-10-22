@@ -1,4 +1,4 @@
-﻿using Ecommerce.Domain;
+﻿using Ecommerce.Domain.Models;
 
 namespace Ecommerce.Repositories;
 
@@ -21,6 +21,8 @@ public static class UserRepository
             Address = "5st Alexandria - Egypt"
         }
     ];
+
+    public static User? currentUser { get; set; }
 
     public static User Create(User user)
     {

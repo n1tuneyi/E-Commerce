@@ -51,6 +51,6 @@ public static class CartService
 
     public static bool HasInCart(long prodID)
     {
-        return GetCartItems(ProgramManager.currentUser.Id)?.FirstOrDefault(item => item.ProductId == prodID) is not null;
+        return GetCartItems(UserRepository.currentUser.Id)?.FirstOrDefault(item => item.ProductId == prodID) is not null;
     }
 }

@@ -1,6 +1,6 @@
-﻿using Ecommerce.Domain;
+﻿using Ecommerce.Domain.Models;
 
-namespace Ecommerce.Repositories;
+namespace Ecommerce.Domain.Repositories;
 
 public static class CartRepository
 {
