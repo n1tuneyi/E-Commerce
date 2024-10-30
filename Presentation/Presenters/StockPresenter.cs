@@ -41,6 +41,7 @@ public class StockPresenter
                 break;
 
             case 4:
+
                 //_adminPresenter.AdminControlMenu();
                 return;
         }

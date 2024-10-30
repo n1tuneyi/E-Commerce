@@ -25,12 +25,11 @@ public class AdminPresenter
             case 1:
                 _productPresenter.ProductsMenu();
                 _stockPresenter.StockOptions();
+                AdminControlMenu();
                 break;
 
             case 2:
                 return;
-                //_mainPresenter.MainMenu();
-                //break;
         }
     }
 }

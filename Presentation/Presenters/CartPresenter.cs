@@ -168,7 +168,8 @@ public class CartPresenter
         CartItem item = new CartItem()
         {
             ProductId = prodID,
-            Quantity = quantity
+            Quantity = quantity,
+            Product = _productService.FindById(prodID)
         };
 
         _cartService.AddToCart(item, userId: UserSession.CurrentUser.Id);

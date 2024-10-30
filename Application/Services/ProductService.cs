@@ -12,6 +12,10 @@ public class ProductService
         _repository = repository;
     }
 
+    public Product FindById(long prodID)
+    {
+        return _repository.FindById(prodID);
+    }
     public List<Product> GetProducts()
     {
         return _repository.GetAll();

@@ -44,9 +44,8 @@ public class CartView
     {
         foreach (CartItem item in items)
         {
-            //Product product = ProductService.Get(item.ProductId)!;
-            //Console.WriteLine($"ID: {product.Id}");
-            //Console.WriteLine($"Product name: {product.Name}");
+            Console.WriteLine($"ID: {item.Product.Id}");
+            Console.WriteLine($"Product name: {item.Product.Name}");
             Console.WriteLine($"Quantity: {item.Quantity}");
             Console.WriteLine($"Total Price: {item.TotalPrice:C}");
             Console.WriteLine(new string('-', count: 10));

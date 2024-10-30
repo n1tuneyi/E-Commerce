@@ -16,7 +16,7 @@ public class CartService
 
     public void AddToCart(CartItem item, long userId)
     {
-        item.TotalPrice = item.Quantity * _productRepository.FindById(item.ProductId).Price;
+        item.TotalPrice = item.Quantity * item.Product.Price;
 
         if (!_cartRepository.Exists(userId))
         {
@@ -86,7 +86,7 @@ public class CartService
     public bool CanAddToCart(long prodID, int requestedQuantity, long userID)
     {
         int? quantityInCart = GetCartItems(userID)
-                     .Find(item => item.ProductId == prodID)
+                     ?.Find(item => item.ProductId == prodID)
                      ?.Quantity;
 
         if (quantityInCart is null) { quantityInCart = 0; }
