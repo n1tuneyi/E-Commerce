@@ -1,40 +1,60 @@
-﻿using Application.Repositories;
+﻿using Application.Interfaces;
+using Application.Repositories;
 using Ecommerce.Domain.Entities;
+using Presentation.Authentication;
 
 namespace Ecommerce.Services;
 public class OrderService
 {
     private readonly IOrderRepository _orderRepository;
-    private readonly ICartRepository _cartRepository;
-    private readonly IProductRepository _productRepository;
 
-    public OrderService(IOrderRepository orderRepository, ICartRepository cartRepository, IProductRepository productRepository)
+
+    private readonly ProductService _productService;
+    private readonly CartService _cartService;
+
+    private readonly ILoggerService _loggerService;
+
+    public OrderService(IOrderRepository orderRepository,
+                        ProductService productService,
+                        CartService cartService,
+                        ILoggerService loggerService)
     {
         _orderRepository = orderRepository;
-        _cartRepository = cartRepository;
-        _productRepository = productRepository;
+        _productService = productService;
+        _cartService = cartService;
+        _loggerService = loggerService;
     }
 
     public void PlaceOrder(long userID)
     {
-        ShoppingCart? cart = _cartRepository.FindByUserId(userID);
+        ShoppingCart? cart = _cartService.GetByUserId(userID);
+
+        List<OrderItem> orderItems = cart.Items.Select(cartItem => new OrderItem()
+        {
+            ProductID = cartItem.ProductId,
+            Quantity = cartItem.Quantity,
+            TotalPrice = cartItem.TotalPrice,
+            CreatedBy = UserSession.CurrentUser.Id
+        }).ToList();
 
         Order order = new Order()
         {
             UserId = userID,
             Date = DateTime.Now,
-            Items = cart.Items,
-            TotalAmount = cart.TotalPrice
+            Items = orderItems,
+            TotalAmount = cart.TotalPrice,
+            CreatedBy = UserSession.CurrentUser.Id
         };
+
+        _loggerService.LogInformation($"UserID {order.CreatedBy} placed an order of {order.Items.Count} items and cost {order.TotalAmount:C}");
 
         _orderRepository.Create(order);
 
         foreach (CartItem item in cart.Items)
         {
-            _productRepository.RemoveFromStock(item.ProductId, item.Quantity);
+            _productService.ConsumeProductStock(item.ProductId, item.Quantity);
+            _cartService.RemoveFromCart(item.ProductId, UserSession.CurrentUser.Id);
         }
-
-        _cartRepository.Remove(cart);
     }
 
     public List<Order> GetOrders(long userID)

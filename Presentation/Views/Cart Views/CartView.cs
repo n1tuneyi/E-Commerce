@@ -37,13 +37,14 @@ public class CartView
 
     public static void ShowEmptyCart()
     {
-        IView.Notify("Your Cart is empty!");
+        View.Notify("Your Cart is empty!");
     }
 
     public static void DisplayItems(List<CartItem> items)
     {
         foreach (CartItem item in items)
         {
+            //if (item.IsDeleted) continue;
             Console.WriteLine($"ID: {item.Product.Id}");
             Console.WriteLine($"Product name: {item.Product.Name}");
             Console.WriteLine($"Quantity: {item.Quantity}");
@@ -71,16 +72,16 @@ public class CartView
 
     public static void ShowSuccessfulAddedToCartMessage()
     {
-        IView.Notify("Item added succesfully to your cart!");
+        View.Notify("Item added succesfully to your cart!");
     }
 
     public static void ShowSuccessfulUpdatedItemMessage()
     {
-        IView.Notify("Item updated succesfully!");
+        View.Notify("Item updated succesfully!");
     }
 
     public static void ShowSuccessfulRemovedFromCartMessage()
     {
-        IView.Notify("Item removed successfully from your cart");
+        View.Notify("Item removed successfully from your cart");
     }
 }

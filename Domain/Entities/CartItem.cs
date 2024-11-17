@@ -1,6 +1,7 @@
 ﻿namespace Ecommerce.Domain.Entities;
-public class CartItem
+public class CartItem : BaseEntity<long>
 {
+    public long Id { get; set; }
     public long ProductId { get; set; }
 
     public int Quantity { get; set; }

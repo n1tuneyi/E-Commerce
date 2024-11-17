@@ -1,5 +1,6 @@
 ﻿using Application.Repositories;
 using Ecommerce.Domain.Entities;
+using Infrastructure.Data;
 using Infrastructure.Database;
 
 namespace Ecommerce.Domain.Repositories;
@@ -7,60 +8,64 @@ namespace Ecommerce.Domain.Repositories;
 public class ProductRepository : IProductRepository
 {
     private readonly Database _db;
-
-    public ProductRepository(Database db)
+    private readonly AppDbContext _context;
+    public ProductRepository(Database db, AppDbContext context)
     {
         _db = db;
+        _context = context;
     }
 
     public Product Create(Product product)
     {
-        product.Id = _db.Products.Count + 1;
+        _context.Products.Add(product);
 
-        _db.Products.Add(product);
+        _context.SaveChanges();
 
         return product;
     }
 
-    public bool Exists(long entityID)
-    {
-        throw new NotImplementedException();
-    }
-
     public Product? FindById(long id)
     {
-        return _db.Products.Find(product => product.Id == id);
+        return _context.Products.FirstOrDefault(product => product.Id == id);
     }
 
     public List<Product> GetAll()
     {
-        return _db.Products;
+        return _context.Products.ToList();
+    }
+
+    public void Update(Product newProduct)
+    {
+        _context.Products.Update(newProduct);
+
+        _context.SaveChanges();
     }
 
     public void Remove(long id)
     {
-        Product? removedProduct = _db.Products.Find(product => product.Id == id);
+        bool softDelete = true;
 
-        _db.Products.Remove(removedProduct);
+        Product? removedProduct = _context.Products.First(product => product.Id == id);
+
+        if (softDelete)
+        {
+            removedProduct.IsDeleted = true;
+        }
+        else
+        {
+            _context.Products.Remove(removedProduct);
+        }
+
+        _context.SaveChanges();
     }
 
     public void Remove(Product entity)
     {
         throw new NotImplementedException();
     }
-
-    public void RemoveFromStock(long id, int quantity)
+    public bool Exists(long entityID)
     {
-        Product product = _db.Products.Find(product => product.Id == id)!;
-
-        if (product.StockQuantity < quantity)
-            throw new ArgumentException($"No enough stock only {product.StockQuantity} left");
-
-        product.StockQuantity -= quantity;
-    }
-
-    public void Update(Product newProduct)
-    {
-        Product product = _db.Products.Find(product => product.Id == newProduct.Id);
+        throw new NotImplementedException();
     }
 }
+

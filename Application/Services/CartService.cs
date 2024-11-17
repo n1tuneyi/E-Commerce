@@ -1,21 +1,32 @@
-﻿using Application.Repositories;
+﻿using Application.Interfaces;
+using Application.Repositories;
 using Ecommerce.Domain.Entities;
+using Presentation.Authentication;
 
 namespace Ecommerce.Services;
 
 public class CartService
 {
     private readonly ICartRepository _cartRepository;
-    private readonly IProductRepository _productRepository;
 
-    public CartService(ICartRepository cartRepository, IProductRepository productRepository)
+
+    private readonly ILoggerService _loggerService;
+
+    private readonly ProductService _productService;
+
+    public CartService(ICartRepository cartRepository,
+        ILoggerService loggerService,
+        ProductService productService)
     {
         _cartRepository = cartRepository;
-        _productRepository = productRepository;
+        _loggerService = loggerService;
+        _productService = productService;
     }
 
     public void AddToCart(CartItem item, long userId)
     {
+        item.Product = _productService.FindById(item.ProductId);
+
         item.TotalPrice = item.Quantity * item.Product.Price;
 
         if (!_cartRepository.Exists(userId))
@@ -26,29 +37,46 @@ public class CartService
                 Items = new List<CartItem>() { item },
                 TotalPrice = item.TotalPrice,
             });
+
+            return;
         }
+
         else
         {
-            ShoppingCart cart = _cartRepository.FindByUserId(userId)!;
-            CartItem? existingItem = cart.Items.Find(it => it.ProductId == item.ProductId);
+            ShoppingCart updatedCart = _cartRepository.FindByUserId(userId)!;
+            CartItem? existingItem = updatedCart.Items.Find(it => it.ProductId == item.ProductId);
 
             if (existingItem is null)
-                cart.Items.Add(item);
+                updatedCart.Items.Add(item);
 
             else
+            {
                 existingItem.Quantity += item.Quantity;
+                existingItem.TotalPrice += item.TotalPrice; // Check this
+                existingItem.UpdatedBy = UserSession.CurrentUser.Id;
+                existingItem.UpdatedDate = DateTime.Now;
+            }
 
-            cart.TotalPrice += item.TotalPrice;
+            updatedCart.TotalPrice += item.TotalPrice;
+
+            _cartRepository.Update(updatedCart);
         }
+
+        _loggerService.LogInformation($"User#{userId} added {item.Quantity} " +
+                        $"amount of Product#{item.ProductId} with total price of {item.TotalPrice:C}");
     }
 
     public void RemoveFromCart(long prodID, long userID)
     {
         ShoppingCart userCart = _cartRepository.FindByUserId(userID)!;
 
-        userCart.TotalPrice -= userCart.Items.Find(p => p.ProductId == prodID).TotalPrice;
+        CartItem removedItem = userCart.Items.Find(p => p.ProductId == prodID);
 
-        _cartRepository.RemoveItem(prodID, userID);
+        userCart.TotalPrice -= removedItem.TotalPrice;
+
+        _loggerService.LogInformation($"User#{userID} removed Product#{removedItem.ProductId} from his cart");
+
+        _cartRepository.RemoveItem(removedItem, userCart);
     }
 
     public ShoppingCart GetByUserId(long userID)
@@ -70,15 +98,24 @@ public class CartService
     {
         ShoppingCart userCart = _cartRepository.FindByUserId(userID);
 
-        CartItem? updatedItem = GetCartItems(userID).FirstOrDefault(item => item.ProductId == prodID);
+        CartItem? updatedItem = userCart.Items.FirstOrDefault(item => item.ProductId == prodID);
 
         userCart.TotalPrice -= updatedItem.TotalPrice;
 
         updatedItem.Quantity = quantity;
 
-        updatedItem.TotalPrice = updatedItem.Quantity * _productRepository.FindById(prodID).Price;
+        updatedItem.TotalPrice = updatedItem.Quantity * _productService.FindById(prodID).Price;
 
         userCart.TotalPrice += updatedItem.TotalPrice;
+
+        updatedItem.UpdatedDate = DateTime.Now;
+
+        updatedItem.UpdatedBy = UserSession.CurrentUser.Id;
+
+        _loggerService.LogInformation($"User#{userID} Changed Quantity of Item#{updatedItem.ProductId} " +
+                    $"from {updatedItem.Quantity} to {quantity}");
+
+        _cartRepository.Update(userCart);
 
         return updatedItem;
     }
@@ -91,6 +128,6 @@ public class CartService
 
         if (quantityInCart is null) { quantityInCart = 0; }
 
-        return quantityInCart + requestedQuantity <= _productRepository.FindById(prodID).StockQuantity;
+        return quantityInCart + requestedQuantity <= _productService.FindById(prodID).StockQuantity;
     }
 }

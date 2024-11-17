@@ -2,7 +2,7 @@
 
 namespace Ecommerce.Views;
 
-public class StockView : IView
+public class StockView : View
 {
     public static void ShowStockOptions()
     {

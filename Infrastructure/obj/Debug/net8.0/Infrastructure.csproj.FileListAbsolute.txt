@@ -16,3 +16,5 @@ E:\Ecommerce\Infrastructure\obj\Debug\net8.0\refint\Infrastructure.dll
 E:\Ecommerce\Infrastructure\obj\Debug\net8.0\Infrastructure.pdb
 E:\Ecommerce\Infrastructure\obj\Debug\net8.0\ref\Infrastructure.dll
 E:\Ecommerce\Infrastructure\obj\Debug\net8.0\Infrastructure.sourcelink.json
+E:\Ecommerce\Infrastructure\bin\Debug\net8.0\Infrastructure.runtimeconfig.json
+E:\Ecommerce\Infrastructure\obj\Debug\net8.0\Infrastructure.genruntimeconfig.cache

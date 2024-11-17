@@ -1,4 +1,5 @@
-﻿using Ecommerce.Views.AuthViews;
+﻿using Ecommerce.Services;
+using Ecommerce.Views.AuthViews;
 
 namespace Ecommerce.Presenters;
 
@@ -7,15 +8,17 @@ public class UserPresenter
     private readonly ProductPresenter _productPresenter;
     private readonly CartPresenter _cartPresenter;
     private readonly OrderPresenter _orderPresenter;
-    //private readonly MainPresenter _mainPresenter;
+    private readonly AuthenticationService _authService;
 
-    public UserPresenter(ProductPresenter productPresenter, CartPresenter cartPresenter,
-                         OrderPresenter orderPresenter)
+    public UserPresenter(ProductPresenter productPresenter,
+                         CartPresenter cartPresenter,
+                         OrderPresenter orderPresenter,
+                         AuthenticationService authService)
     {
         _productPresenter = productPresenter;
         _cartPresenter = cartPresenter;
         _orderPresenter = orderPresenter;
-        //_mainPresenter = mainPresenter;
+        _authService = authService;
     }
 
     public void UserControlMenu()
@@ -35,7 +38,7 @@ public class UserPresenter
                 break;
 
             case 3:
-                //_mainPresenter.MainMenu();
+                _authService.Logout();
                 return;
         }
 

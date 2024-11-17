@@ -1,4 +1,5 @@
-﻿using Ecommerce.Views.AuthViews;
+﻿using Ecommerce.Services;
+using Ecommerce.Views.AuthViews;
 
 namespace Ecommerce.Presenters;
 
@@ -6,13 +7,14 @@ public class AdminPresenter
 {
     private readonly ProductPresenter _productPresenter;
     private readonly StockPresenter _stockPresenter;
-    //private readonly MainPresenter _mainPresenter;
 
-    public AdminPresenter(ProductPresenter productPresenter, StockPresenter stockPresenter)
+    private readonly AuthenticationService _authService;
+    public AdminPresenter(ProductPresenter productPresenter, StockPresenter stockPresenter, AuthenticationService authService)
     {
         _productPresenter = productPresenter;
         _stockPresenter = stockPresenter;
-        //_mainPresenter = mainPresenter;
+        _authService = authService;
+
     }
 
     public void AdminControlMenu()
@@ -29,6 +31,7 @@ public class AdminPresenter
                 break;
 
             case 2:
+                _authService.Logout();
                 return;
         }
     }

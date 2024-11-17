@@ -5,5 +5,5 @@ namespace Application.Repositories;
 public interface ICartRepository : IGenericRepository<ShoppingCart>
 {
     ShoppingCart? FindByUserId(long userID);
-    void RemoveItem(long prodID, long userID);
+    void RemoveItem(CartItem removedItem, ShoppingCart userCart);
 }

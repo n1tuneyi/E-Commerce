@@ -23,8 +23,8 @@ public class AuthPresenter
     public void Login()
     {
         AuthView.ShowLoginPrompt();
-        string username = IView.GetInput("Please enter your username: ");
-        string password = IView.GetInput("Please enter your password: ");
+        string username = View.GetInput("Please enter your username: ");
+        string password = View.GetInput("Please enter your password: ");
 
         try
         {
@@ -49,13 +49,13 @@ public class AuthPresenter
     {
         string? username, password, email, address;
 
-        username = IView.GetInput("Please Enter your Username: ");
+        username = View.GetInput("Please Enter your Username: ");
 
-        password = IView.GetInput("Please Enter your Password: ");
+        password = View.GetInput("Please Enter your Password: ");
 
-        email = IView.GetInput("Please Enter your Email: ");
+        email = View.GetInput("Please Enter your Email: ");
 
-        address = IView.GetInput("Please Enter your Address: ");
+        address = View.GetInput("Please Enter your Address: ");
 
         User user = new User()
         {

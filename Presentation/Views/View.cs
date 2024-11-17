@@ -1,6 +1,6 @@
 ﻿namespace Ecommerce.Views;
 
-public abstract class IView
+public abstract class View
 {
     public static string GetInput(string prompt)
     {

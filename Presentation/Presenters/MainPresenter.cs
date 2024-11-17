@@ -29,7 +29,7 @@ public class MainPresenter
                     break;
 
                 case 3:
-                    IView.Notify("Exiting Application ...");
+                    View.Notify("Exiting Application ...");
                     Environment.Exit(0);
                     break;
             }

@@ -1,6 +1,7 @@
 ﻿using Ecommerce.Domain.Entities;
 using Ecommerce.Services;
 using Ecommerce.Views;
+using Presentation.Authentication;
 
 namespace Ecommerce.Presenters;
 
@@ -9,15 +10,11 @@ public class StockPresenter
 
     private readonly ProductService _productService;
 
-    //private readonly AdminPresenter _adminPresenter;
     private readonly ProductPresenter _productPresenter;
-
-    private readonly StockView _stockView;
 
     public StockPresenter(ProductService productService, ProductPresenter productPresenter)
     {
         _productService = productService;
-        //_adminPresenter = adminPresenter;
         _productPresenter = productPresenter;
     }
 
@@ -41,8 +38,6 @@ public class StockPresenter
                 break;
 
             case 4:
-
-                //_adminPresenter.AdminControlMenu();
                 return;
         }
 
@@ -55,20 +50,21 @@ public class StockPresenter
         decimal price;
         int quantity;
 
-        name = IView.GetInput("Enter name of the product: ");
+        name = View.GetInput("Enter name of the product: ");
 
-        description = IView.GetInput("Enter Description of the product: ");
+        description = View.GetInput("Enter Description of the product: ");
 
-        price = decimal.Parse(IView.GetInput("Enter Price: "));
+        price = decimal.Parse(View.GetInput("Enter Price: "));
 
-        quantity = int.Parse(IView.GetInput("Enter Stock Quantity: "));
+        quantity = int.Parse(View.GetInput("Enter Stock Quantity: "));
 
         Product addedProduct = new Product()
         {
             Name = name,
             Description = description,
             Price = price,
-            StockQuantity = quantity
+            StockQuantity = quantity,
+            CreatedBy = UserSession.CurrentUser.Id,
         };
 
         _productService.Add(addedProduct);
@@ -103,7 +99,7 @@ public class StockPresenter
                 Console.WriteLine("Please enter valid ID: ");
         } while (true);
 
-        _productService.RemoveProduct(prodID);
+        _productService.Remove(prodID);
 
         StockView.ShowSuccessfulRemovedProductMessage();
     }
@@ -144,20 +140,20 @@ public class StockPresenter
         switch (choice)
         {
             case 1:
-                string newName = IView.GetInput("Enter new name: ");
+                string newName = View.GetInput("Enter new name: ");
                 _productService.UpdateName(prodID, newName);
                 break;
             case 2:
-                string newDescription = IView.GetInput("Enter new description: ");
+                string newDescription = View.GetInput("Enter new description: ");
                 _productService.UpdateDescription(prodID, newDescription);
                 break;
             case 3:
-                decimal newPrice = decimal.Parse(IView.GetInput("Enter new price: "));
+                decimal newPrice = decimal.Parse(View.GetInput("Enter new price: "));
                 _productService.UpdatePrice(prodID, newPrice);
                 break;
             case 4:
-                int newQuantity = int.Parse(IView.GetInput("Enter new quantity: "));
-                _productService.UpdateQuantity(prodID, newQuantity);
+                int newQuantity = int.Parse(View.GetInput("Enter new quantity: "));
+                _productService.UpdateStockQuantity(prodID, newQuantity);
                 break;
         }
 

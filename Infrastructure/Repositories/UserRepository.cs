@@ -1,5 +1,6 @@
 ﻿using Application.Repositories;
 using Ecommerce.Domain.Entities;
+using Infrastructure.Data;
 using Infrastructure.Database;
 
 namespace Ecommerce.Domain.Repositories;
@@ -7,29 +8,19 @@ namespace Ecommerce.Domain.Repositories;
 public class UserRepository : IAuthRepository
 {
     private readonly Database _db;
+    private readonly AppDbContext _context;
 
-    public UserRepository(Database db)
+    public UserRepository(Database db, AppDbContext context)
     {
         _db = db;
+        _context = context;
     }
-
-    public static User? currentUser { get; set; }
 
     public User Create(User user)
     {
-        bool isExistingUsername = FindByUsername(user.Username) is not null;
+        _context.Users.Add(user);
 
-        bool isExistingEmail = FindByEmail(user.Email) is not null;
-
-        if (isExistingUsername)
-            throw new ArgumentException("username already exists!");
-
-        if (isExistingEmail)
-            throw new ArgumentException("email already exists!");
-
-        user.Id = _db.Users.Count + 1;
-
-        _db.Users.Add(user);
+        _context.SaveChanges();
 
         return user;
     }
@@ -47,22 +38,22 @@ public class UserRepository : IAuthRepository
 
     public User? FindById(long id)
     {
-        return _db.Users.FirstOrDefault(user => user.Id == id);
+        return _context.Users.FirstOrDefault(user => user.Id == id);
     }
 
     public User? FindByUsername(string username)
     {
-        return _db.Users.FirstOrDefault(user => user.Username == username);
+        return _context.Users.FirstOrDefault(user => user.Username == username);
     }
 
     public User? FindByEmail(string email)
     {
-        return _db.Users.FirstOrDefault(user => user.Email == email);
+        return _context.Users.FirstOrDefault(user => user.Email == email);
     }
 
     public List<User> GetAll()
     {
-        return _db.Users;
+        return _context.Users.ToList();
     }
 
     public void Update(User updatedEntity)

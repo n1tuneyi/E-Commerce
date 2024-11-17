@@ -1,15 +1,19 @@
-﻿using Application.Repositories;
+﻿using Application.Interfaces;
+using Application.Repositories;
 using Ecommerce.Domain.Entities;
+using Presentation.Authentication;
 
 namespace Ecommerce.Services;
 
 public class ProductService
 {
     private readonly IProductRepository _repository;
+    private readonly ILoggerService _loggerService;
 
-    public ProductService(IProductRepository repository)
+    public ProductService(IProductRepository repository, ILoggerService loggerService)
     {
         _repository = repository;
+        _loggerService = loggerService;
     }
 
     public Product FindById(long prodID)
@@ -23,6 +27,8 @@ public class ProductService
 
     public Product Add(Product product)
     {
+        _loggerService.LogInformation($"Product#{product.Id} " +
+            $"just got added to stock with {product.StockQuantity} quantity and price:{product.Price:C}");
         return _repository.Create(product);
     }
 
@@ -33,7 +39,8 @@ public class ProductService
 
     public void Remove(long productId)
     {
-        _repository.RemoveFromStock(productId, int.MaxValue);
+        _loggerService.LogInformation($"Product#{productId} is removed by Admin#{UserSession.CurrentUser.Id}");
+        _repository.Remove(productId);
     }
 
     public Product? Get(long productId)
@@ -41,30 +48,44 @@ public class ProductService
         return _repository.FindById(productId);
     }
 
-    public void RemoveProduct(long productId)
+    // Product Consumed by a customer
+    public void ConsumeProductStock(long productId, int requestedQuantity)
     {
-        _repository.Remove(productId);
+        Product product = FindById(productId);
+
+        product.StockQuantity -= requestedQuantity;
+        _loggerService.LogInformation($"Product#{productId} stock decreased by {requestedQuantity} amount");
+        _repository.Update(product);
     }
 
     public void UpdateName(long productId, string newName)
     {
-        Product product = _repository.FindById(productId);
+        Product product = FindById(productId);
         product.Name = newName;
+        product.UpdatedDate = DateTime.Now;
+        _repository.Update(product);
     }
+
     public void UpdateDescription(long productId, string newDescription)
     {
-        Product product = _repository.FindById(productId);
+        Product product = FindById(productId);
         product.Description = newDescription;
+        product.UpdatedDate = DateTime.Now;
+        _repository.Update(product);
     }
     public void UpdatePrice(long productId, decimal newPrice)
     {
-        Product product = _repository.FindById(productId);
+        Product product = FindById(productId);
         product.Price = newPrice;
+        product.UpdatedDate = DateTime.Now;
+        _repository.Update(product);
     }
-
-    public void UpdateQuantity(long productId, int newQuantity)
+    // Product Stock changed by an Admin
+    public void UpdateStockQuantity(long productId, int newQuantity)
     {
-        Product product = _repository.FindById(productId);
+        Product product = FindById(productId);
         product.StockQuantity = newQuantity;
+        product.UpdatedDate = DateTime.Now;
+        _repository.Update(product);
     }
 }

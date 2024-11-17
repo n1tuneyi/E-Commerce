@@ -48,20 +48,9 @@ public class Database
         }
     ];
 
-    public List<ShoppingCart> Carts
-    {
-        get => carts;
-    }
-    public List<User> Users
-    {
-        get => users;
-    }
-    public List<Product> Products
-    {
-        get => products;
-    }
-    public List<Order> Orders
-    {
-        get => orders;
-    }
+    public List<ShoppingCart> Carts => carts;
+    public List<User> Users => users;
+    public List<Product> Products => products;
+    public List<Order> Orders => orders;
+
 }

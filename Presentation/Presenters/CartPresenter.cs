@@ -107,7 +107,7 @@ public class CartPresenter
     public void ViewCart()
     {
         ShoppingCart cart = _cartService.GetByUserId(UserSession.CurrentUser.Id);
-        if (cart is null || cart.Items?.Count == 0)
+        if (cart is null || cart.Items is null || cart.Items.Count == 0)
         {
             CartView.ShowEmptyCart();
             _productPresenter.ProductsMenu();
@@ -169,8 +169,10 @@ public class CartPresenter
         {
             ProductId = prodID,
             Quantity = quantity,
-            Product = _productService.FindById(prodID)
+            CreatedBy = UserSession.CurrentUser.Id,
+            //Product = _productService.FindById(prodID)
         };
+        Console.WriteLine(item.CreatedDate);
 
         _cartService.AddToCart(item, userId: UserSession.CurrentUser.Id);
 

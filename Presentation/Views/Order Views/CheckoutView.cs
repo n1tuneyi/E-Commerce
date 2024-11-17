@@ -25,10 +25,10 @@ public class CheckoutView
 
     public static void ShowProcessingOrderMessage()
     {
-        IView.Notify("Order is being processed ...");
+        View.Notify("Order is being processed ...");
     }
     public static void ShowSuccessfulCheckoutMessage()
     {
-        IView.Notify("Order successfully created!");
+        View.Notify("Order successfully created!");
     }
 }

@@ -18,7 +18,7 @@ public class OrderView
             Console.WriteLine($"Order Date: {order.Date}");
             Console.WriteLine();
             Console.WriteLine("Products Bought: ");
-            CartView.DisplayItems(order.Items);
+            //CartView.DisplayItems(order.Items);
             Console.WriteLine($"Total Amount Paid: {order.TotalAmount:C}");
             Console.WriteLine();
             Console.WriteLine();

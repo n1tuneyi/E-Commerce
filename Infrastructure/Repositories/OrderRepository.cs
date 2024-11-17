@@ -1,5 +1,6 @@
 ﻿using Application.Repositories;
 using Ecommerce.Domain.Entities;
+using Infrastructure.Data;
 using Infrastructure.Database;
 
 namespace Ecommerce.Domain.Repositories;
@@ -7,22 +8,26 @@ namespace Ecommerce.Domain.Repositories;
 public class OrderRepository : IOrderRepository
 {
     private readonly Database _db;
+    private readonly AppDbContext _context;
 
-    public OrderRepository(Database db)
+    public OrderRepository(Database db, AppDbContext context)
     {
         _db = db;
+        _context = context;
     }
 
     public List<Order> GetOrdersByUserId(long userId)
     {
-        return _db.Orders.FindAll(order => order.UserId == userId);
+        return _context.Orders
+                       .Where(order => order.UserId == userId)
+                       .ToList();
     }
 
     public Order Create(Order order)
     {
-        order.Id = _db.Orders.Count + 1;
+        _context.Orders.Add(order);
 
-        _db.Orders.Add(order);
+        _context.SaveChanges();
 
         return order;
     }

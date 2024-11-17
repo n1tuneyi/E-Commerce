@@ -1,6 +1,6 @@
 ﻿namespace Ecommerce.Views.AuthViews;
 
-public class AuthView : IView
+public class AuthView : View
 {
     public static void ShowLoginPrompt()
     {
