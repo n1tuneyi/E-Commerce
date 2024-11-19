@@ -4,7 +4,7 @@ namespace Ecommerce.Views;
 
 public class OrderView
 {
-    public static void ShowOrderHistory(List<Order> orders)
+    public static void ShowOrderHistory(IEnumerable<Order> orders)
     {
         Console.WriteLine();
         Console.WriteLine();

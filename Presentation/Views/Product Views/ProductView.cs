@@ -4,12 +4,12 @@ namespace Ecommerce.Views;
 
 public class ProductView
 {
-    public static void ShowAvailableProducts(List<Product> products)
+    public static void ShowAvailableProducts(IEnumerable<Product> products)
     {
         Console.Clear();
         Console.WriteLine("Available Products");
 
-        if (products.Count == 0)
+        if (products.Count() == 0)
         {
             Console.WriteLine("There are no available products yet.");
             Thread.Sleep(1000);

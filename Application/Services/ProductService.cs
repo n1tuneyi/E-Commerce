@@ -16,37 +16,35 @@ public class ProductService
         _loggerService = loggerService;
     }
 
-    public Product FindById(long prodID)
+    public Product? FindById(long prodID)
     {
-        return _repository.FindById(prodID);
+        return _repository.GetProduct(prodID, trackChanges: true);
     }
-    public List<Product> GetProducts()
+    public IEnumerable<Product> GetProducts()
     {
-        return _repository.GetAll();
+        return _repository.GetAllProducts(trackChanges: false);
     }
 
-    public Product Add(Product product)
+    public void Add(Product product)
     {
         _loggerService.LogInformation($"Product#{product.Id} " +
             $"just got added to stock with {product.StockQuantity} quantity and price:{product.Price:C}");
-        return _repository.Create(product);
+
+        _repository.Create(product);
     }
 
-    public bool Exists(long id)
+    public bool Exists(long prodID)
     {
-        return _repository.FindById(id) is not null;
+        return FindById(prodID) is not null;
     }
 
-    public void Remove(long productId)
+    public void Remove(long prodID)
     {
-        _loggerService.LogInformation($"Product#{productId} is removed by Admin#{UserSession.CurrentUser.Id}");
-        _repository.Remove(productId);
+        _loggerService.LogInformation($"Product#{prodID} is removed by Admin#{UserSession.CurrentUser.Id}");
+        Product? RemovedProduct = FindById(prodID);
+        _repository.Delete(RemovedProduct);
     }
 
-    public Product? Get(long productId)
-    {
-        return _repository.FindById(productId);
-    }
 
     // Product Consumed by a customer
     public void ConsumeProductStock(long productId, int requestedQuantity)
@@ -54,7 +52,9 @@ public class ProductService
         Product product = FindById(productId);
 
         product.StockQuantity -= requestedQuantity;
+
         _loggerService.LogInformation($"Product#{productId} stock decreased by {requestedQuantity} amount");
+
         _repository.Update(product);
     }
 

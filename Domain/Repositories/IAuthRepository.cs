@@ -1,10 +1,11 @@
-﻿using Ecommerce.Domain.Entities;
+﻿using Domain.Repositories;
+using Ecommerce.Domain.Entities;
 
 namespace Application.Repositories;
 
-public interface IAuthRepository : IGenericRepository<User>
+public interface IAuthRepository : IRepositoryBase<User>
 {
-    User? FindByUsername(string username);
+    User? FindByUsername(string username, bool trackChanges);
 
-    User? FindByEmail(string email);
+    User? FindByEmail(string email, bool trackChanges);
 }

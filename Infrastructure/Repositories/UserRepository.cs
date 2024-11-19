@@ -1,78 +1,31 @@
 ﻿using Application.Repositories;
 using Ecommerce.Domain.Entities;
 using Infrastructure.Data;
-using Infrastructure.Database;
 
-namespace Ecommerce.Domain.Repositories;
+namespace Infrastructure.newRepositories;
 
-public class UserRepository : IAuthRepository
+public class UserRepository : RepositoryBase<User>, IAuthRepository
 {
-    private readonly Database _db;
-    private readonly AppDbContext _context;
+    public UserRepository(AppDbContext context) : base(context)
+    { }
 
-    public UserRepository(Database db, AppDbContext context)
+    public User? FindById(long userId, bool trackChanges)
     {
-        _db = db;
-        _context = context;
+        return FindByCondition(u => u.Id == userId, trackChanges).SingleOrDefault();
     }
 
-    public User Create(User user)
+    public User? FindByUsername(string username, bool trackChanges)
     {
-        _context.Users.Add(user);
-
-        _context.SaveChanges();
-
-        return user;
+        return FindByCondition(u => u.Username == username, trackChanges).SingleOrDefault();
     }
 
-    public User? Remove(long id)
+    public User? FindByEmail(string email, bool trackChanges)
     {
-        User? user = _db.Users.Find(user => user.Id == id);
-
-        if (user is null) return null;
-
-        _db.Users.Remove(user);
-
-        return user;
+        return FindByCondition(u => u.Email == email, trackChanges).SingleOrDefault();
     }
 
-    public User? FindById(long id)
+    public IEnumerable<User> GetAll(bool trackChanges)
     {
-        return _context.Users.FirstOrDefault(user => user.Id == id);
-    }
-
-    public User? FindByUsername(string username)
-    {
-        return _context.Users.FirstOrDefault(user => user.Username == username);
-    }
-
-    public User? FindByEmail(string email)
-    {
-        return _context.Users.FirstOrDefault(user => user.Email == email);
-    }
-
-    public List<User> GetAll()
-    {
-        return _context.Users.ToList();
-    }
-
-    public void Update(User updatedEntity)
-    {
-        throw new NotImplementedException();
-    }
-
-    void IGenericRepository<User>.Remove(long entityId)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void Remove(User entity)
-    {
-        throw new NotImplementedException();
-    }
-
-    public bool Exists(long entityID)
-    {
-        throw new NotImplementedException();
+        return FindAll(trackChanges).ToList();
     }
 }

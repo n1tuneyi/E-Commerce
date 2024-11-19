@@ -15,7 +15,7 @@ public class ProductPresenter
 
     public void ProductsMenu()
     {
-        List<Product> availableProducts = _productService.GetProducts();
+        IEnumerable<Product> availableProducts = _productService.GetProducts();
 
         ProductView.ShowAvailableProducts(availableProducts);
     }

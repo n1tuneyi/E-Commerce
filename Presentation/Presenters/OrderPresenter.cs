@@ -16,9 +16,9 @@ public class OrderPresenter
 
     public void OrderHistory()
     {
-        List<Order> orders = _orderService.GetOrders(userID: UserSession.CurrentUser.Id);
+        IEnumerable<Order> orders = _orderService.GetOrders(userID: UserSession.CurrentUser.Id);
 
-        if (orders.Count == 0)
+        if (orders.Count() == 0)
             View.Notify("You haven't placed orders yet.");
 
         else

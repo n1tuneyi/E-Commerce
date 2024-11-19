@@ -57,8 +57,8 @@ public class OrderService
         }
     }
 
-    public List<Order> GetOrders(long userID)
+    public IEnumerable<Order> GetOrders(long userID)
     {
-        return _orderRepository.GetOrdersByUserId(userID);
+        return _orderRepository.GetOrders(userID, trackChanges: false);
     }
 }

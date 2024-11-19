@@ -18,9 +18,9 @@ public class AuthenticationService
 
     public User Signup(User user)
     {
-        bool isExistingUsername = _repository.FindByUsername(user.Username) is not null;
+        bool isExistingUsername = _repository.FindByUsername(user.Username, trackChanges: false) is not null;
 
-        bool isExistingEmail = _repository.FindByEmail(user.Email) is not null;
+        bool isExistingEmail = _repository.FindByEmail(user.Email, trackChanges: false) is not null;
 
         if (isExistingUsername)
             throw new ArgumentException("username already exists!");
@@ -35,7 +35,7 @@ public class AuthenticationService
 
     public User Login(string username, string password)
     {
-        User? user = _repository.FindByUsername(username);
+        User? user = _repository.FindByUsername(username, trackChanges: false);
 
         if (user?.Password == password)
         {

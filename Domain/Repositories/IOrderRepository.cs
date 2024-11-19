@@ -1,8 +1,9 @@
-﻿using Ecommerce.Domain.Entities;
+﻿using Domain.Repositories;
+using Ecommerce.Domain.Entities;
 
 namespace Application.Repositories;
 
-public interface IOrderRepository : IGenericRepository<Order>
+public interface IOrderRepository : IRepositoryBase<Order>
 {
-    List<Order> GetOrdersByUserId(long userID);
+    IEnumerable<Order> GetOrders(long userId, bool trackChanges);
 }

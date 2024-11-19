@@ -1,9 +1,11 @@
-﻿using Ecommerce.Domain.Entities;
+﻿using Domain.Repositories;
+using Ecommerce.Domain.Entities;
 
 namespace Application.Repositories;
 
-public interface ICartRepository : IGenericRepository<ShoppingCart>
+public interface ICartRepository : IRepositoryBase<ShoppingCart>
 {
-    ShoppingCart? FindByUserId(long userID);
+    ShoppingCart? GetByUserId(long userId, bool trackChanges);
     void RemoveItem(CartItem removedItem, ShoppingCart userCart);
+    bool Exists(long userId);
 }

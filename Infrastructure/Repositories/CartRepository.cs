@@ -1,87 +1,38 @@
 ﻿using Application.Repositories;
 using Ecommerce.Domain.Entities;
 using Infrastructure.Data;
-using Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 
-namespace Ecommerce.Domain.Repositories;
+namespace Infrastructure.newRepositories;
 
-public class CartRepository : ICartRepository
+public class CartRepository : RepositoryBase<ShoppingCart>, ICartRepository
 {
-    private readonly Database _db;
-    private readonly AppDbContext _context;
+    public CartRepository(AppDbContext context) : base(context)
+    { }
 
-    public CartRepository(Database db, AppDbContext context)
+    public ShoppingCart? GetByUserId(long userId, bool trackChanges)
     {
-        _db = db;
-        _context = context;
-    }
-
-    public ShoppingCart Create(ShoppingCart cart)
-    {
-        _context.Carts.Add(cart);
-
-        _context.SaveChanges();
-
-        return cart;
-    }
-
-    public ShoppingCart? FindByUserId(long id)
-    {
-        string dbugMsg = _context.Carts.Include(c => c.Items)
-                             .ThenInclude(i => i.Product).ToQueryString();
-        Console.WriteLine(dbugMsg);
-        return _context.Carts.Include(c => c.Items)
+        return FindByCondition(c => c.UserId == userId, trackChanges)
+                             .Include(c => c.Items)
                              .ThenInclude(i => i.Product)
-                             .FirstOrDefault(cart => cart.UserId == id);
+                             .SingleOrDefault();
     }
 
-    public void RemoveItem(CartItem removedItem, ShoppingCart userCart)
+    public void RemoveItem(CartItem item, ShoppingCart userCart)
     {
         bool softDelete = true;
 
         if (softDelete)
-        {
-            removedItem.IsDeleted = true;
-        }
+            item.IsDeleted = true;
 
         else
-        {
-            _context.Items.Remove(removedItem);
-        }
+            _context.Items.Remove(item);
 
-        _context.SaveChanges();
-        userCart.Items.Remove(removedItem);
     }
 
-    public void Remove(ShoppingCart cart)
+    public bool Exists(long userId)
     {
-        if (cart is null)
-            return;
-
-        _context.SaveChanges();
+        return GetByUserId(userId, false) is not null;
     }
 
-    public void Update(ShoppingCart updatedEntity)
-    {
-        _context.Update(updatedEntity);
-        _context.SaveChanges();
-    }
-    public ShoppingCart? FindById(long entityID)
-    {
-        return _context.Carts.Include(c => c.Items).FirstOrDefault(c => c.Id == entityID);
-    }
-    public bool Exists(long id)
-    {
-        return FindByUserId(id) is not null;
-    }
-
-    public List<ShoppingCart> GetAll()
-    {
-        throw new NotImplementedException();
-    }
-    public void Remove(long entityId)
-    {
-        throw new NotImplementedException();
-    }
 }
