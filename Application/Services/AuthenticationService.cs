@@ -1,7 +1,7 @@
-﻿using Application.Interfaces;
+﻿using Application.Authentication;
+using Application.Interfaces;
 using Application.Repositories;
 using Ecommerce.Domain.Entities;
-using Presentation.Authentication;
 
 namespace Ecommerce.Services;
 

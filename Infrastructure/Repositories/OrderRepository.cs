@@ -1,6 +1,7 @@
 ﻿using Application.Repositories;
 using Ecommerce.Domain.Entities;
-using Infrastructure.Data;
+using Infrastructure.Context;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.newRepositories;
 
@@ -10,7 +11,10 @@ public class OrderRepository : RepositoryBase<Order>, IOrderRepository
 
     public IEnumerable<Order> GetOrders(long userId, bool trackChanges)
     {
-        return FindByCondition(o => o.UserId == userId, trackChanges).ToList();
+        return FindByCondition(o => o.UserId == userId, trackChanges)
+            .Include(o => o.Items)
+            .ThenInclude(oi => oi.Product)
+            .ToList();
     }
 
 }

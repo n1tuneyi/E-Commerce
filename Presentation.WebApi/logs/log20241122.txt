@@ -1,0 +1,11 @@
+2024-11-22 15:13:12.133 +02:00 [INF] User#2 added 10 amount of Product#1 with total price of $80.00
+2024-11-22 15:14:57.417 +02:00 [INF] User#3 added 10 amount of Product#1 with total price of $80.00
+2024-11-22 15:16:55.990 +02:00 [INF] User#3 added 5 amount of Product#1 with total price of $40.00
+2024-11-22 15:34:06.113 +02:00 [INF] User#1 removed Product#2 from his cart
+2024-11-22 16:55:15.211 +02:00 [INF] UserID 0 placed an order of 1 items and cost $80.00
+2024-11-22 16:55:16.674 +02:00 [INF] Product#1 stock decreased by 10 amount
+2024-11-22 16:55:16.920 +02:00 [INF] User#1 removed Product#1 from his cart
+2024-11-22 17:04:22.965 +02:00 [INF] User#1 added 1 amount of Product#1 with total price of $8.00
+2024-11-22 17:05:55.935 +02:00 [INF] UserID 0 placed an order of 1 items and cost $8.00
+2024-11-22 17:05:56.029 +02:00 [INF] Product#1 stock decreased by 1 amount
+2024-11-22 17:05:56.039 +02:00 [INF] User#1 removed Product#1 from his cart

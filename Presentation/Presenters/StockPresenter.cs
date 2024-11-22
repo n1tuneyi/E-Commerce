@@ -67,7 +67,7 @@ public class StockPresenter
             CreatedBy = UserSession.CurrentUser.Id,
         };
 
-        _productService.Add(addedProduct);
+        _productService.Create(addedProduct);
 
         StockView.ShowSuccessfulAddedProductMessage();
     }

@@ -1,6 +1,6 @@
 ﻿using Application.Repositories;
 using Ecommerce.Domain.Entities;
-using Infrastructure.Data;
+using Infrastructure.Context;
 
 namespace Infrastructure.newRepositories;
 

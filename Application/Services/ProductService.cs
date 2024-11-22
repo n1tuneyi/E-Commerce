@@ -1,7 +1,7 @@
 ﻿using Application.Interfaces;
 using Application.Repositories;
+using Domain.Errors;
 using Ecommerce.Domain.Entities;
-using Presentation.Authentication;
 
 namespace Ecommerce.Services;
 
@@ -18,19 +18,25 @@ public class ProductService
 
     public Product? FindById(long prodID)
     {
-        return _repository.GetProduct(prodID, trackChanges: true);
+        var prod = _repository.GetProduct(prodID, trackChanges: true);
+
+        if (prod is null)
+            throw new ProductNotFoundException(prodID);
+
+        return prod;
     }
+
     public IEnumerable<Product> GetProducts()
     {
         return _repository.GetAllProducts(trackChanges: false);
     }
 
-    public void Add(Product product)
+    public Product Create(Product product)
     {
         _loggerService.LogInformation($"Product#{product.Id} " +
             $"just got added to stock with {product.StockQuantity} quantity and price:{product.Price:C}");
 
-        _repository.Create(product);
+        return _repository.Create(product);
     }
 
     public bool Exists(long prodID)
@@ -38,11 +44,11 @@ public class ProductService
         return FindById(prodID) is not null;
     }
 
-    public void Remove(long prodID)
+    public Product Remove(long prodID)
     {
-        _loggerService.LogInformation($"Product#{prodID} is removed by Admin#{UserSession.CurrentUser.Id}");
+        //_loggerService.LogInformation($"Product#{prodID} is removed by Admin#{UserSession.CurrentUser.Id}");
         Product? RemovedProduct = FindById(prodID);
-        _repository.Delete(RemovedProduct);
+        return _repository.Delete(RemovedProduct);
     }
 
 

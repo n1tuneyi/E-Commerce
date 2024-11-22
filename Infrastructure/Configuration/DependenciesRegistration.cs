@@ -1,7 +1,5 @@
 ﻿using Application.Interfaces;
 using Application.Repositories;
-using Ecommerce;
-using Ecommerce.Presenters;
 using Ecommerce.Services;
 using Infrastructure.Context;
 using Infrastructure.Logging;
@@ -28,19 +26,6 @@ public static class DependenciesRegistration
         services.AddScoped<IAuthRepository, UserRepository>();
         services.AddScoped<ICartRepository, CartRepository>();
 
-        // Registering Presenters
-        services.AddScoped<AuthPresenter>();
-        services.AddScoped<UserPresenter>();
-        services.AddScoped<AdminPresenter>();
-        services.AddScoped<CartPresenter>();
-        services.AddScoped<OrderPresenter>();
-        services.AddScoped<ProductPresenter>();
-        services.AddScoped<StockPresenter>();
-        services.AddScoped<MainPresenter>();
-
-        // Registering Program Manager
-        services.AddScoped<ProgramManager>();
-
         services.AddSingleton<ILoggerService, LoggerService>();
 
         return services;
@@ -49,6 +34,10 @@ public static class DependenciesRegistration
     {
         var connString = config.GetConnectionString("DefaultConnection");
         return services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connString));
+    }
+    public static IServiceCollection ConfigureLogging(this IServiceCollection services)
+    {
+        return services.AddSingleton<ILoggerService, LoggerService>();
     }
 
 }

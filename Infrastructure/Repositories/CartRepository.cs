@@ -1,6 +1,6 @@
 ﻿using Application.Repositories;
 using Ecommerce.Domain.Entities;
-using Infrastructure.Data;
+using Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.newRepositories;
@@ -28,6 +28,7 @@ public class CartRepository : RepositoryBase<ShoppingCart>, ICartRepository
         else
             _context.Items.Remove(item);
 
+        _context.SaveChanges();
     }
 
     public bool Exists(long userId)

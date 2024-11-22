@@ -1,6 +1,6 @@
 ﻿using Ecommerce.Domain.Entities;
 
-namespace Presentation.Authentication;
+namespace Application.Authentication;
 
 public class UserSession
 {

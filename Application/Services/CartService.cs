@@ -1,7 +1,8 @@
-﻿using Application.Interfaces;
+﻿using Application.Authentication;
+using Application.DTOs;
+using Application.Interfaces;
 using Application.Repositories;
 using Ecommerce.Domain.Entities;
-using Presentation.Authentication;
 
 namespace Ecommerce.Services;
 
@@ -22,14 +23,31 @@ public class CartService
         _productService = productService;
     }
 
-    public ShoppingCart GetByUserId(long userID)
+    public CartDTO GetByUserId(long userID)
     {
-        return _cartRepository.GetByUserId(userID, trackChanges: true);
+        ShoppingCart cart = _cartRepository.GetByUserId(userID, trackChanges: true);
+
+        CartDTO cartDTO = new CartDTO()
+        {
+            Items = cart.Items.Select(item => new ViewCartItemDTO(
+                ProductId: item.ProductId,
+                Description: item.Product.Description,
+                Name: item.Product.Name,
+                Price: item.Product.Price,
+                Quantity: item.Quantity,
+                StockQuantity: item.Product.StockQuantity,
+                TotalPrice: item.Product.Price * item.Quantity
+            )).ToList(),
+
+            TotalPrice = cart.Items.Sum(item => item.TotalPrice)
+        };
+
+        return cartDTO;
     }
 
     public List<CartItem> GetCartItems(long userID)
     {
-        return GetByUserId(userID).Items;
+        return _cartRepository.GetByUserId(userID, trackChanges: true).Items;
     }
 
     public bool HasInCart(long prodID, long userID)
@@ -37,52 +55,59 @@ public class CartService
         return GetCartItems(userID)?.FirstOrDefault(item => item.ProductId == prodID) is not null;
     }
 
-    public void AddToCart(CartItem item, long userId)
+    public void AddToCart(CreateCartItemDTO item, long userId)
     {
-        item.Product = _productService.FindById(item.ProductId);
+        Product? itemProd = _productService.FindById(item.ProductId);
 
-        item.TotalPrice = item.Quantity * item.Product.Price;
+        decimal TotalPrice = item.Quantity * itemProd.Price;
+
+        CartItem newItem = new CartItem()
+        {
+            Quantity = item.Quantity,
+            TotalPrice = TotalPrice,
+            Product = itemProd
+        };
 
         if (!_cartRepository.Exists(userId))
         {
             _cartRepository.Create(new ShoppingCart()
             {
                 UserId = userId,
-                Items = new List<CartItem>() { item },
-                TotalPrice = item.TotalPrice,
+                Items = new List<CartItem>() {
+                    newItem
+                },
+                TotalPrice = newItem.TotalPrice
             });
-
-            return;
         }
 
         else
         {
-            ShoppingCart updatedCart = GetByUserId(userId);
+            ShoppingCart updatedCart = _cartRepository.GetByUserId(userId, trackChanges: true);
             CartItem? existingItem = updatedCart.Items.Find(it => it.ProductId == item.ProductId);
 
             if (existingItem is null)
-                updatedCart.Items.Add(item);
+                updatedCart.Items.Add(newItem);
 
             else
             {
                 existingItem.Quantity += item.Quantity;
-                existingItem.TotalPrice += item.TotalPrice; // Check this
-                existingItem.UpdatedBy = UserSession.CurrentUser.Id;
+                existingItem.TotalPrice += TotalPrice; // Check this
+                //existingItem.UpdatedBy = UserSession.CurrentUser.Id;
                 existingItem.UpdatedDate = DateTime.Now;
             }
 
-            updatedCart.TotalPrice += item.TotalPrice;
+            updatedCart.TotalPrice += TotalPrice;
 
             _cartRepository.Update(updatedCart);
         }
 
         _loggerService.LogInformation($"User#{userId} added {item.Quantity} " +
-                        $"amount of Product#{item.ProductId} with total price of {item.TotalPrice:C}");
+                        $"amount of Product#{item.ProductId} with total price of {TotalPrice:C}");
     }
 
     public void RemoveFromCart(long prodID, long userID)
     {
-        ShoppingCart userCart = GetByUserId(userID);
+        ShoppingCart userCart = _cartRepository.GetByUserId(userID, trackChanges: true);
 
         CartItem removedItem = userCart.Items.Find(p => p.ProductId == prodID);
 
@@ -96,7 +121,7 @@ public class CartService
 
     public CartItem UpdateItem(long prodID, int quantity, long userID)
     {
-        ShoppingCart userCart = GetByUserId(userID);
+        ShoppingCart userCart = _cartRepository.GetByUserId(userID, trackChanges: true);
 
         CartItem? updatedItem = userCart.Items.FirstOrDefault(item => item.ProductId == prodID);
 
