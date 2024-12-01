@@ -1,10 +1,13 @@
 ﻿using Ecommerce.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Presentation.WebApi.Extensions;
 
 namespace Presentation.WebApi.Controllers
 {
     [Route("api/orders")]
     [ApiController]
+    [Authorize]
     public class OrderController : ControllerBase
     {
         private readonly OrderService _orderService;
@@ -15,17 +18,18 @@ namespace Presentation.WebApi.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetMyOrders()
+
+        public async Task<IActionResult> GetMyOrders()
         {
-            var orders = _orderService.GetOrders(1);
+            var orders = await _orderService.GetOrdersAsync(User.GetUserId());
 
             return Ok(orders);
         }
 
         [HttpPost]
-        public IActionResult PlaceOrder()
+        public async Task<IActionResult> PlaceOrder()
         {
-            var order = _orderService.PlaceOrder(1);
+            var order = await _orderService.PlaceOrderAsync(User.GetUserId());
 
             return Ok(order);
         }

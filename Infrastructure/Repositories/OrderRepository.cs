@@ -9,12 +9,12 @@ public class OrderRepository : RepositoryBase<Order>, IOrderRepository
 {
     public OrderRepository(AppDbContext context) : base(context) { }
 
-    public IEnumerable<Order> GetOrders(long userId, bool trackChanges)
+    public async Task<IEnumerable<Order>> GetOrdersAsync(string userId, bool trackChanges)
     {
-        return FindByCondition(o => o.UserId == userId, trackChanges)
+        return await FindByCondition(o => o.UserId == userId, trackChanges)
             .Include(o => o.Items)
             .ThenInclude(oi => oi.Product)
-            .ToList();
+            .ToListAsync();
     }
 
 }

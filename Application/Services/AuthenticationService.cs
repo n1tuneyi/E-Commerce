@@ -1,58 +1,101 @@
-﻿using Application.Authentication;
+﻿using Application.DTOs.Auth;
 using Application.Interfaces;
-using Application.Repositories;
+using AutoMapper;
 using Ecommerce.Domain.Entities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace Ecommerce.Services;
 
 public class AuthenticationService
 {
-    private readonly IAuthRepository _repository;
-    private readonly ILoggerService _loggerService;
+    private readonly ILoggerService _logger;
+    private readonly CartService _cartService;
+    private readonly UserManager<User> _userManager;
+    private readonly IMapper _mapper;
+    private readonly IConfiguration _configuration;
+    private User? _user;
 
-    public AuthenticationService(IAuthRepository repository, ILoggerService loggerService)
+    public AuthenticationService(ILoggerService loggerService, UserManager<User> userManager
+        , IMapper mapper, IConfiguration configuration, CartService cartService)
     {
-        _repository = repository;
-        _loggerService = loggerService;
+
+        _logger = loggerService;
+        _userManager = userManager;
+        _mapper = mapper;
+        _configuration = configuration;
+        _cartService = cartService;
     }
 
-    public User Signup(User user)
+    public async Task<IdentityResult> Signup(UserForRegistrationDto userForRegistration)
     {
-        bool isExistingUsername = _repository.FindByUsername(user.Username, trackChanges: false) is not null;
+        var user = _mapper.Map<User>(userForRegistration);
 
-        bool isExistingEmail = _repository.FindByEmail(user.Email, trackChanges: false) is not null;
+        var result = await _userManager.CreateAsync(user, userForRegistration.Password);
 
-        if (isExistingUsername)
-            throw new ArgumentException("username already exists!");
-
-        if (isExistingEmail)
-            throw new ArgumentException("email already exists!");
-
-        _loggerService.LogInformation($"{user.Username} just signed up");
-
-        return _repository.Create(user);
-    }
-
-    public User Login(string username, string password)
-    {
-        User? user = _repository.FindByUsername(username, trackChanges: false);
-
-        if (user?.Password == password)
+        if (result.Succeeded)
         {
-            _loggerService.LogInformation($"User {username} has logged in");
-            return user;
+            await _userManager.AddToRolesAsync(user, userForRegistration.Roles);
+            await _cartService.InitCartAsync(user.Id);
         }
 
-        else
-            throw new ArgumentException("Username or Password is incorrect");
+        return result;
+    }
+    public async Task<bool> ValidateUser(UserForAuthenticationDto userForAuth)
+    {
+        _user = await _userManager.FindByNameAsync(userForAuth.UserName);
+
+        var result = (_user != null && await _userManager.CheckPasswordAsync(_user, userForAuth.Password));
+
+        if (!result)
+            _logger.LogWarning($"{nameof(ValidateUser)}: Authentication failed. Wrong name or password.");
+
+        return result;
+    }
+    public async Task<string> CreateToken()
+    {
+        var signingCredentials = GetSigningCredentials();
+        var claims = await GetClaims();
+        var tokenOptions = GenerateTokenOptions(signingCredentials, claims);
+        return new JwtSecurityTokenHandler().WriteToken(tokenOptions);
+    }
+    private SigningCredentials GetSigningCredentials()
+    {
+        var key = Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("SECRET").PadLeft(32, '0'));
+        var secret = new SymmetricSecurityKey(key);
+        return new SigningCredentials(secret, SecurityAlgorithms.HmacSha256);
     }
 
-    public void Logout()
+    private async Task<List<Claim>> GetClaims()
     {
-        // Logs out current user
-        _loggerService.LogInformation($"User {UserSession.CurrentUser.Username} just logged out!");
+        var claims = new List<Claim> { new Claim(ClaimTypes.Name, _user.UserName),
+                                       new Claim(ClaimTypes.NameIdentifier, _user.Id)
+                                     };
 
-        UserSession.CurrentUser = null;
+        var roles = await _userManager.GetRolesAsync(_user);
+        foreach (var role in roles)
+        {
+            claims.Add(new Claim(ClaimTypes.Role, role));
+        }
+        return claims;
+    }
+
+    private JwtSecurityToken GenerateTokenOptions(SigningCredentials signingCredentials, List<Claim> claims)
+    {
+        var jwtSettings = _configuration.GetSection("JwtSettings");
+        var tokenOptions = new JwtSecurityToken
+        (
+        issuer: jwtSettings["validIssuer"],
+        audience: jwtSettings["validAudience"],
+        claims: claims,
+        expires: DateTime.Now.AddMinutes(Convert.ToDouble(jwtSettings["expires"])),
+        signingCredentials: signingCredentials
+        );
+        return tokenOptions;
     }
 
 }

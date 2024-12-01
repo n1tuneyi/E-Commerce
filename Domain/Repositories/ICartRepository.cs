@@ -5,7 +5,7 @@ namespace Application.Repositories;
 
 public interface ICartRepository : IRepositoryBase<ShoppingCart>
 {
-    ShoppingCart? GetByUserId(long userId, bool trackChanges);
-    void RemoveItem(CartItem removedItem, ShoppingCart userCart);
-    bool Exists(long userId);
+    Task<ShoppingCart> GetCartAsync(string userId, bool trackChanges);
+    Task RemoveItemAsync(CartItem removedItem, ShoppingCart userCart);
+    Task<bool> Exists(string userId);
 }

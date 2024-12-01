@@ -1,15 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-namespace Ecommerce.Domain.Entities;
+﻿namespace Ecommerce.Domain.Entities;
 public class ShoppingCart
 {
-    public long Id { get; set; }
-    public long UserId { get; set; }
-
-    [ForeignKey("UserId")]
+    public Guid Id { get; set; }
+    public string UserId { get; set; }
     public User User { get; set; }
-
     public List<CartItem> Items { get; set; } = new List<CartItem>();
-
     public decimal TotalPrice { get; set; }
 }

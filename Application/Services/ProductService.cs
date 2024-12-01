@@ -1,6 +1,10 @@
-﻿using Application.Interfaces;
+﻿using Application.DTOs.Product;
+using Application.Interfaces;
 using Application.Repositories;
+using AutoMapper;
 using Domain.Errors;
+using Domain.Request.Product;
+using Domain.RequestFeatures;
 using Ecommerce.Domain.Entities;
 
 namespace Ecommerce.Services;
@@ -9,16 +13,18 @@ public class ProductService
 {
     private readonly IProductRepository _repository;
     private readonly ILoggerService _loggerService;
+    private readonly IMapper _mapper;
 
-    public ProductService(IProductRepository repository, ILoggerService loggerService)
+    public ProductService(IProductRepository repository, ILoggerService loggerService, IMapper mapper)
     {
         _repository = repository;
         _loggerService = loggerService;
+        _mapper = mapper;
     }
 
-    public Product? FindById(long prodID)
+    public async Task<Product> GetProductAsync(Guid prodID)
     {
-        var prod = _repository.GetProduct(prodID, trackChanges: true);
+        var prod = await _repository.GetProductAsync(prodID, trackChanges: true);
 
         if (prod is null)
             throw new ProductNotFoundException(prodID);
@@ -26,72 +32,60 @@ public class ProductService
         return prod;
     }
 
-    public IEnumerable<Product> GetProducts()
+    public async Task<(IEnumerable<Product> products, MetaData metaData)> GetProductsAsync(ProductParameters productParameters)
     {
-        return _repository.GetAllProducts(trackChanges: false);
+        var productsWithMetaData = await _repository.GetAllProductsAsync(productParameters, trackChanges: false);
+
+        if (!productParameters.ValidPriceRange)
+            throw new InvalidRangeBadRequestException();
+
+
+        var products = _mapper.Map<IEnumerable<Product>>(productsWithMetaData);
+
+        return (products, metaData: productsWithMetaData.MetaData);
     }
 
-    public Product Create(Product product)
+    public async Task<Product> CreateAsync(Product product)
     {
         _loggerService.LogInformation($"Product#{product.Id} " +
             $"just got added to stock with {product.StockQuantity} quantity and price:{product.Price:C}");
 
-        return _repository.Create(product);
+        return await _repository.CreateAsync(product);
     }
 
-    public bool Exists(long prodID)
+    public bool Exists(Guid prodID)
     {
-        return FindById(prodID) is not null;
+        return GetProductAsync(prodID) is not null;
     }
 
-    public Product Remove(long prodID)
+    public async Task<Product> RemoveAsync(Guid prodID)
     {
         //_loggerService.LogInformation($"Product#{prodID} is removed by Admin#{UserSession.CurrentUser.Id}");
-        Product? RemovedProduct = FindById(prodID);
-        return _repository.Delete(RemovedProduct);
+        Product? RemovedProduct = await GetProductAsync(prodID);
+        return await _repository.DeleteAsync(RemovedProduct);
     }
 
 
     // Product Consumed by a customer
-    public void ConsumeProductStock(long productId, int requestedQuantity)
+    public async Task ConsumeProductStockAsync(Guid productId, int requestedQuantity)
     {
-        Product product = FindById(productId);
+        Product product = await GetProductAsync(productId);
 
         product.StockQuantity -= requestedQuantity;
 
         _loggerService.LogInformation($"Product#{productId} stock decreased by {requestedQuantity} amount");
 
-        _repository.Update(product);
+        await _repository.UpdateAsync(product);
     }
 
-    public void UpdateName(long productId, string newName)
+    public async Task UpdateProductAsync(Guid prodId, ProductUpdateDto productToUpdate)
     {
-        Product product = FindById(productId);
-        product.Name = newName;
-        product.UpdatedDate = DateTime.Now;
-        _repository.Update(product);
-    }
+        Product product = await GetProductAsync(prodId);
 
-    public void UpdateDescription(long productId, string newDescription)
-    {
-        Product product = FindById(productId);
-        product.Description = newDescription;
-        product.UpdatedDate = DateTime.Now;
-        _repository.Update(product);
-    }
-    public void UpdatePrice(long productId, decimal newPrice)
-    {
-        Product product = FindById(productId);
-        product.Price = newPrice;
-        product.UpdatedDate = DateTime.Now;
-        _repository.Update(product);
-    }
-    // Product Stock changed by an Admin
-    public void UpdateStockQuantity(long productId, int newQuantity)
-    {
-        Product product = FindById(productId);
-        product.StockQuantity = newQuantity;
-        product.UpdatedDate = DateTime.Now;
-        _repository.Update(product);
+        Console.WriteLine($"price: {productToUpdate.Price}, stockQuantity: {productToUpdate.StockQuantity}");
+
+        _mapper.Map(productToUpdate, product);
+
+        await _repository.UpdateAsync(product);
     }
 }

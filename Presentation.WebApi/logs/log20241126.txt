@@ -1,0 +1,5 @@
+2024-11-26 13:22:13.844 +02:00 [INF] Product#0 just got added to stock with 0 quantity and price:$3,234,234.00
+2024-11-26 13:23:14.124 +02:00 [INF] Product#0 just got added to stock with 0 quantity and price:$3,234,234.00
+2024-11-26 13:23:41.406 +02:00 [INF] Product#0 just got added to stock with 0 quantity and price:$0.00
+2024-11-26 13:58:01.611 +02:00 [INF] Product#0 just got added to stock with 4 quantity and price:$3,234,234.00
+2024-11-26 14:02:55.679 +02:00 [INF] Product#0 just got added to stock with 0 quantity and price:$0.00

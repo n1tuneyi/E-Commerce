@@ -1,0 +1,4 @@
+2024-11-27 21:50:26.495 +02:00 [INF] User#594492b6-0c43-4190-96bb-5d98f068b90a added 1 amount of Product#1 with total price of $8.00
+2024-11-27 21:51:34.235 +02:00 [INF] User#594492b6-0c43-4190-96bb-5d98f068b90a added 1 amount of Product#1 with total price of $8.00
+2024-11-27 21:51:42.439 +02:00 [INF] User#594492b6-0c43-4190-96bb-5d98f068b90a added 1 amount of Product#2 with total price of $4.00
+2024-11-27 22:20:00.728 +02:00 [INF] User#594492b6-0c43-4190-96bb-5d98f068b90a removed Product#2 from his cart

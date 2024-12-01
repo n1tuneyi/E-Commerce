@@ -2,7 +2,7 @@
 
 public sealed class ProductNotFoundException : NotFoundException
 {
-    public ProductNotFoundException(long prodId)
+    public ProductNotFoundException(Guid prodId)
     : base($"The product with id: {prodId} is not found")
     {
     }

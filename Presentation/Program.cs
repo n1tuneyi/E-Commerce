@@ -1,7 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Presentation.Configuration;
-
-namespace Ecommerce;
+﻿namespace Ecommerce;
 
 public class Program
 {

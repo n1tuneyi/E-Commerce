@@ -1,13 +1,11 @@
 ﻿namespace Ecommerce.Domain.Entities;
-public class OrderItem : BaseEntity<long>
+public class OrderItem : BaseEntity<Guid>
 {
-    public long Id { get; set; }
-    public long OrderID { get; set; }
+    public Guid OrderID { get; set; }
     public Order Order { get; set; }
-    public long ProductID { get; set; }
+    public Guid ProductId { get; set; }
     public Product Product { get; set; }
-
     public int Quantity { get; set; }
-
+    public decimal Price { get; set; }
     public decimal TotalPrice { get; set; }
 }

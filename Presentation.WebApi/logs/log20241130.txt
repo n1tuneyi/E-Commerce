@@ -1,0 +1,55 @@
+2024-11-30 17:05:54.602 +02:00 [INF] Product#00000000-0000-0000-0000-000000000000 just got added to stock with 0 quantity and price:$0.00
+2024-11-30 17:06:41.775 +02:00 [INF] Product#00000000-0000-0000-0000-000000000000 just got added to stock with 0 quantity and price:$0.00
+2024-11-30 17:06:54.488 +02:00 [INF] Product#00000000-0000-0000-0000-000000000000 just got added to stock with 0 quantity and price:$0.00
+2024-11-30 17:33:48.871 +02:00 [INF] User#51f1ffb4-b95c-4cdb-84af-b60dffd853ee added 5 amount of Product#49576434-141b-48f1-9831-1ad13613567b with total price of $20.00
+2024-11-30 17:33:52.302 +02:00 [INF] User#51f1ffb4-b95c-4cdb-84af-b60dffd853ee added 5 amount of Product#49576434-141b-48f1-9831-1ad13613567b with total price of $20.00
+2024-11-30 17:34:16.160 +02:00 [INF] UserID 0 placed an order of 1 items and cost $40.00
+2024-11-30 17:34:16.212 +02:00 [INF] Product#49576434-141b-48f1-9831-1ad13613567b stock decreased by 10 amount
+2024-11-30 17:34:16.219 +02:00 [INF] User#51f1ffb4-b95c-4cdb-84af-b60dffd853ee removed Product#49576434-141b-48f1-9831-1ad13613567b from his cart
+2024-11-30 18:15:07.783 +02:00 [INF] User#51f1ffb4-b95c-4cdb-84af-b60dffd853ee added 10 amount of Product#25db778b-694c-4339-9cda-281a2655c1c1 with total price of $80.00
+2024-11-30 18:15:09.754 +02:00 [INF] UserID 0 placed an order of 1 items and cost $80.00
+2024-11-30 18:15:09.812 +02:00 [INF] Product#25db778b-694c-4339-9cda-281a2655c1c1 stock decreased by 10 amount
+2024-11-30 18:15:09.827 +02:00 [INF] User#51f1ffb4-b95c-4cdb-84af-b60dffd853ee removed Product#25db778b-694c-4339-9cda-281a2655c1c1 from his cart
+2024-11-30 18:15:34.484 +02:00 [INF] User#51f1ffb4-b95c-4cdb-84af-b60dffd853ee added 5 amount of Product#25db778b-694c-4339-9cda-281a2655c1c1 with total price of $40.00
+2024-11-30 18:15:45.703 +02:00 [INF] User#51f1ffb4-b95c-4cdb-84af-b60dffd853ee added 5 amount of Product#49576434-141b-48f1-9831-1ad13613567b with total price of $20.00
+2024-11-30 18:15:52.308 +02:00 [INF] UserID 0 placed an order of 2 items and cost $60.00
+2024-11-30 18:15:52.424 +02:00 [INF] Product#25db778b-694c-4339-9cda-281a2655c1c1 stock decreased by 5 amount
+2024-11-30 18:15:52.429 +02:00 [INF] User#51f1ffb4-b95c-4cdb-84af-b60dffd853ee removed Product#25db778b-694c-4339-9cda-281a2655c1c1 from his cart
+2024-11-30 18:15:52.434 +02:00 [INF] Product#49576434-141b-48f1-9831-1ad13613567b stock decreased by 5 amount
+2024-11-30 18:15:52.437 +02:00 [INF] User#51f1ffb4-b95c-4cdb-84af-b60dffd853ee removed Product#49576434-141b-48f1-9831-1ad13613567b from his cart
+2024-11-30 18:32:26.285 +02:00 [INF] User#51f1ffb4-b95c-4cdb-84af-b60dffd853ee added 5 amount of Product#49576434-141b-48f1-9831-1ad13613567b with total price of $20.00
+2024-11-30 18:32:46.802 +02:00 [INF] User#51f1ffb4-b95c-4cdb-84af-b60dffd853ee added 2 amount of Product#25db778b-694c-4339-9cda-281a2655c1c1 with total price of $16.00
+2024-11-30 18:34:04.801 +02:00 [INF] UserID 0 placed an order of 2 items and cost $36.00
+2024-11-30 18:34:04.892 +02:00 [INF] Product#49576434-141b-48f1-9831-1ad13613567b stock decreased by 5 amount
+2024-11-30 18:34:04.915 +02:00 [INF] User#51f1ffb4-b95c-4cdb-84af-b60dffd853ee removed Product#49576434-141b-48f1-9831-1ad13613567b from his cart
+2024-11-30 18:34:04.926 +02:00 [INF] Product#25db778b-694c-4339-9cda-281a2655c1c1 stock decreased by 2 amount
+2024-11-30 18:34:04.933 +02:00 [INF] User#51f1ffb4-b95c-4cdb-84af-b60dffd853ee removed Product#25db778b-694c-4339-9cda-281a2655c1c1 from his cart
+2024-11-30 18:43:38.539 +02:00 [WRN] ValidateUser: Authentication failed. Wrong name or password.
+2024-11-30 18:44:34.910 +02:00 [INF] User#a8e3d0cb-5800-41a7-a244-f87371cf6cd0 added 2 amount of Product#1359d32e-78a7-4299-a015-0dd12fba5013 with total price of $16.00
+2024-11-30 18:44:45.105 +02:00 [INF] User#a8e3d0cb-5800-41a7-a244-f87371cf6cd0 added 2 amount of Product#531a64d5-45ed-472b-beb1-8820b63c5232 with total price of $8.00
+2024-11-30 18:44:51.977 +02:00 [INF] UserID 0 placed an order of 2 items and cost $24.00
+2024-11-30 18:44:52.045 +02:00 [INF] Product#1359d32e-78a7-4299-a015-0dd12fba5013 stock decreased by 2 amount
+2024-11-30 18:44:52.060 +02:00 [INF] User#a8e3d0cb-5800-41a7-a244-f87371cf6cd0 removed Product#1359d32e-78a7-4299-a015-0dd12fba5013 from his cart
+2024-11-30 18:44:52.070 +02:00 [INF] Product#531a64d5-45ed-472b-beb1-8820b63c5232 stock decreased by 2 amount
+2024-11-30 18:44:52.080 +02:00 [INF] User#a8e3d0cb-5800-41a7-a244-f87371cf6cd0 removed Product#531a64d5-45ed-472b-beb1-8820b63c5232 from his cart
+2024-11-30 18:57:10.717 +02:00 [INF] User#a8e3d0cb-5800-41a7-a244-f87371cf6cd0 added 2 amount of Product#531a64d5-45ed-472b-beb1-8820b63c5232 with total price of $8.00
+2024-11-30 19:39:03.360 +02:00 [INF] User#a8e3d0cb-5800-41a7-a244-f87371cf6cd0 added 2 amount of Product#531a64d5-45ed-472b-beb1-8820b63c5232 with total price of $8.00
+2024-11-30 19:39:08.876 +02:00 [INF] User#a8e3d0cb-5800-41a7-a244-f87371cf6cd0 added 2 amount of Product#531a64d5-45ed-472b-beb1-8820b63c5232 with total price of $8.00
+2024-11-30 19:40:23.685 +02:00 [INF] User#a8e3d0cb-5800-41a7-a244-f87371cf6cd0 added 2 amount of Product#531a64d5-45ed-472b-beb1-8820b63c5232 with total price of $8.00
+2024-11-30 19:41:48.371 +02:00 [INF] User#a8e3d0cb-5800-41a7-a244-f87371cf6cd0 added 2 amount of Product#531a64d5-45ed-472b-beb1-8820b63c5232 with total price of $8.00
+2024-11-30 19:42:00.678 +02:00 [INF] User#a8e3d0cb-5800-41a7-a244-f87371cf6cd0 added 3 amount of Product#531a64d5-45ed-472b-beb1-8820b63c5232 with total price of $12.00
+2024-11-30 19:42:27.577 +02:00 [INF] User#a8e3d0cb-5800-41a7-a244-f87371cf6cd0 added 3 amount of Product#1359d32e-78a7-4299-a015-0dd12fba5013 with total price of $24.00
+2024-11-30 19:44:48.058 +02:00 [INF] User#a8e3d0cb-5800-41a7-a244-f87371cf6cd0 added 3 amount of Product#1359d32e-78a7-4299-a015-0dd12fba5013 with total price of $24.00
+2024-11-30 19:45:05.553 +02:00 [INF] UserID 0 placed an order of 2 items and cost $32.00
+2024-11-30 19:45:05.688 +02:00 [INF] Product#531a64d5-45ed-472b-beb1-8820b63c5232 stock decreased by 2 amount
+2024-11-30 19:45:05.705 +02:00 [INF] User#a8e3d0cb-5800-41a7-a244-f87371cf6cd0 removed Product#531a64d5-45ed-472b-beb1-8820b63c5232 from his cart
+2024-11-30 19:45:05.714 +02:00 [INF] Product#1359d32e-78a7-4299-a015-0dd12fba5013 stock decreased by 3 amount
+2024-11-30 19:45:05.727 +02:00 [INF] User#a8e3d0cb-5800-41a7-a244-f87371cf6cd0 removed Product#1359d32e-78a7-4299-a015-0dd12fba5013 from his cart
+2024-11-30 19:46:24.659 +02:00 [INF] User#a8e3d0cb-5800-41a7-a244-f87371cf6cd0 added 3 amount of Product#1359d32e-78a7-4299-a015-0dd12fba5013 with total price of $24.00
+2024-11-30 19:46:26.207 +02:00 [INF] UserID 0 placed an order of 1 items and cost $24.00
+2024-11-30 19:46:26.240 +02:00 [INF] Product#1359d32e-78a7-4299-a015-0dd12fba5013 stock decreased by 3 amount
+2024-11-30 19:46:26.258 +02:00 [INF] User#a8e3d0cb-5800-41a7-a244-f87371cf6cd0 removed Product#1359d32e-78a7-4299-a015-0dd12fba5013 from his cart
+2024-11-30 20:51:22.648 +02:00 [INF] Product#00000000-0000-0000-0000-000000000000 just got added to stock with 5 quantity and price:$41,000.00
+2024-11-30 20:51:49.643 +02:00 [INF] Product#00000000-0000-0000-0000-000000000000 just got added to stock with 3 quantity and price:$37,500.00
+2024-11-30 20:52:28.717 +02:00 [INF] Product#00000000-0000-0000-0000-000000000000 just got added to stock with 10 quantity and price:$35,000.00
+2024-11-30 20:53:07.746 +02:00 [INF] Product#00000000-0000-0000-0000-000000000000 just got added to stock with 2 quantity and price:$37,444.00

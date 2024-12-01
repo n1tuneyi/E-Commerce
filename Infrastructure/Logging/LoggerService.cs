@@ -5,7 +5,6 @@ using Serilog;
 
 public class LoggerService : ILoggerService
 {
-
     public LoggerService()
     {
         string logDirectory = "logs";

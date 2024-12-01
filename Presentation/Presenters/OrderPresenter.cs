@@ -1,9 +1,4 @@
-﻿using Ecommerce.Domain.Entities;
-using Ecommerce.Services;
-using Ecommerce.Views;
-using Presentation.Authentication;
-
-namespace Ecommerce.Presenters;
+﻿namespace Ecommerce.Presenters;
 
 public class OrderPresenter
 {

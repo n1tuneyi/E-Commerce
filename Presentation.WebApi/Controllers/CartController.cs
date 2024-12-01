@@ -1,11 +1,15 @@
-﻿using Application.DTOs;
+﻿using Application.DTOs.Cart;
 using Ecommerce.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Presentation.WebApi.Extensions;
 
 namespace Presentation.WebApi.Controllers
 {
     [Route("api/carts")]
     [ApiController]
+    [Authorize]
+
     public class CartController : ControllerBase
     {
         private readonly CartService _cartService;
@@ -16,31 +20,27 @@ namespace Presentation.WebApi.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetMyCart()
+        public async Task<IActionResult> GetMyCart()
         {
-            // Later when we do authentication we will know the ID of the connected user
-            // but for now we are using the User with ID 1 
-
-            var cart = _cartService.GetByUserId(1);
+            var cart = await _cartService.GetCartAsync(User.GetUserId());
 
             return Ok(cart);
         }
 
-        [HttpPost]
-        public IActionResult AddItemToCart(CreateCartItemDTO item)
+        [HttpPost("items")]
+        public async Task<IActionResult> AddItemToCart(CreateCartItemDTO item)
         {
-            _cartService.AddToCart(item, 1);
+            await _cartService.AddToCartAsync(item, User.GetUserId());
 
             return Ok();
         }
 
         [HttpDelete("items/{prodId}")]
-        public IActionResult RemoveItemFromCart(long prodId)
+        public async Task<IActionResult> RemoveItemFromCart(Guid prodId)
         {
-            _cartService.RemoveFromCart(prodId, 1);
+            await _cartService.RemoveFromCartAsync(prodId, User.GetUserId());
+
             return NoContent();
         }
-
-
     }
 }

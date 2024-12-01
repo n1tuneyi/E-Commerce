@@ -1,7 +1,7 @@
-﻿using Application.Authentication;
-using Application.DTOs;
+﻿using Application.DTOs.Cart;
 using Application.Interfaces;
 using Application.Repositories;
+using AutoMapper;
 using Ecommerce.Domain.Entities;
 
 namespace Ecommerce.Services;
@@ -14,50 +14,38 @@ public class CartService
 
     private readonly ProductService _productService;
 
+    private readonly IMapper _mapper;
+
     public CartService(ICartRepository cartRepository,
         ILoggerService loggerService,
-        ProductService productService)
+        ProductService productService,
+        IMapper mapper)
     {
         _cartRepository = cartRepository;
         _loggerService = loggerService;
         _productService = productService;
+        _mapper = mapper;
     }
 
-    public CartDTO GetByUserId(long userID)
+
+    // Initialize an empty cart in DB after user signsup
+    public async Task InitCartAsync(string userId)
     {
-        ShoppingCart cart = _cartRepository.GetByUserId(userID, trackChanges: true);
+        await _cartRepository.CreateAsync(new ShoppingCart() { UserId = userId });
+    }
 
-        CartDTO cartDTO = new CartDTO()
-        {
-            Items = cart.Items.Select(item => new ViewCartItemDTO(
-                ProductId: item.ProductId,
-                Description: item.Product.Description,
-                Name: item.Product.Name,
-                Price: item.Product.Price,
-                Quantity: item.Quantity,
-                StockQuantity: item.Product.StockQuantity,
-                TotalPrice: item.Product.Price * item.Quantity
-            )).ToList(),
+    public async Task<CartDTO> GetCartAsync(string userID)
+    {
+        ShoppingCart cart = await _cartRepository.GetCartAsync(userID, trackChanges: true);
 
-            TotalPrice = cart.Items.Sum(item => item.TotalPrice)
-        };
+        CartDTO cartDTO = _mapper.Map<CartDTO>(cart);
 
         return cartDTO;
     }
 
-    public List<CartItem> GetCartItems(long userID)
+    public async Task AddToCartAsync(CreateCartItemDTO item, string userId)
     {
-        return _cartRepository.GetByUserId(userID, trackChanges: true).Items;
-    }
-
-    public bool HasInCart(long prodID, long userID)
-    {
-        return GetCartItems(userID)?.FirstOrDefault(item => item.ProductId == prodID) is not null;
-    }
-
-    public void AddToCart(CreateCartItemDTO item, long userId)
-    {
-        Product? itemProd = _productService.FindById(item.ProductId);
+        Product? itemProd = await _productService.GetProductAsync(item.ProductId);
 
         decimal TotalPrice = item.Quantity * itemProd.Price;
 
@@ -68,91 +56,100 @@ public class CartService
             Product = itemProd
         };
 
-        if (!_cartRepository.Exists(userId))
-        {
-            _cartRepository.Create(new ShoppingCart()
-            {
-                UserId = userId,
-                Items = new List<CartItem>() {
-                    newItem
-                },
-                TotalPrice = newItem.TotalPrice
-            });
-        }
+        ShoppingCart updatedCart = await _cartRepository.GetCartAsync(userId, trackChanges: true);
+
+        CartItem? existingItem = updatedCart.Items.Find(it => it.ProductId == item.ProductId);
+
+        if (existingItem is null)
+            updatedCart.Items.Add(newItem);
 
         else
         {
-            ShoppingCart updatedCart = _cartRepository.GetByUserId(userId, trackChanges: true);
-            CartItem? existingItem = updatedCart.Items.Find(it => it.ProductId == item.ProductId);
-
-            if (existingItem is null)
-                updatedCart.Items.Add(newItem);
-
-            else
-            {
-                existingItem.Quantity += item.Quantity;
-                existingItem.TotalPrice += TotalPrice; // Check this
-                //existingItem.UpdatedBy = UserSession.CurrentUser.Id;
-                existingItem.UpdatedDate = DateTime.Now;
-            }
-
-            updatedCart.TotalPrice += TotalPrice;
-
-            _cartRepository.Update(updatedCart);
+            existingItem.Quantity += item.Quantity;
+            existingItem.TotalPrice += TotalPrice;
+            existingItem.UpdatedDate = DateTime.Now;
         }
+
+        updatedCart.TotalPrice += TotalPrice;
+
+        await _cartRepository.UpdateAsync(updatedCart);
+
 
         _loggerService.LogInformation($"User#{userId} added {item.Quantity} " +
                         $"amount of Product#{item.ProductId} with total price of {TotalPrice:C}");
     }
 
-    public void RemoveFromCart(long prodID, long userID)
+    public async Task RemoveFromCartAsync(Guid prodID, string userID)
     {
-        ShoppingCart userCart = _cartRepository.GetByUserId(userID, trackChanges: true);
+        ShoppingCart userCart = await _cartRepository.GetCartAsync(userID, trackChanges: true);
 
         CartItem removedItem = userCart.Items.Find(p => p.ProductId == prodID);
+
+        if (removedItem is null)
+        {
+            // Throwing Exception is not good here 
+            // Because the global error middleware will see this as 500 Internal server error
+            // and it's a BadRequest 400 error
+            throw new Exception("No such item in the cart");
+        }
 
         userCart.TotalPrice -= removedItem.TotalPrice;
 
         _loggerService.LogInformation($"User#{userID} removed Product#{removedItem.ProductId} from his cart");
 
-        _cartRepository.RemoveItem(removedItem, userCart);
+        await _cartRepository.RemoveItemAsync(removedItem, userCart);
     }
 
 
-    public CartItem UpdateItem(long prodID, int quantity, long userID)
+    public async Task<CartItem> UpdateItemAsync(Guid prodID, int quantity, string userID)
     {
-        ShoppingCart userCart = _cartRepository.GetByUserId(userID, trackChanges: true);
+        ShoppingCart userCart = await _cartRepository.GetCartAsync(userID, trackChanges: true);
 
-        CartItem? updatedItem = userCart.Items.FirstOrDefault(item => item.ProductId == prodID);
+        CartItem? updatedItem = userCart.Items.Find(item => item.ProductId == prodID);
+
+        if (updatedItem is null)
+            throw new Exception("Item not found!");
+
+
+        Product itemProduct = await _productService.GetProductAsync(prodID);
 
         userCart.TotalPrice -= updatedItem.TotalPrice;
 
         updatedItem.Quantity = quantity;
 
-        updatedItem.TotalPrice = updatedItem.Quantity * _productService.FindById(prodID).Price;
+        updatedItem.TotalPrice = updatedItem.Quantity * itemProduct.Price;
 
         userCart.TotalPrice += updatedItem.TotalPrice;
 
         updatedItem.UpdatedDate = DateTime.Now;
 
-        updatedItem.UpdatedBy = UserSession.CurrentUser.Id;
-
         _loggerService.LogInformation($"User#{userID} Changed Quantity of Item#{updatedItem.ProductId} " +
                     $"from {updatedItem.Quantity} to {quantity}");
 
-        _cartRepository.Update(userCart);
+        await _cartRepository.UpdateAsync(userCart);
 
         return updatedItem;
     }
 
-    public bool CanAddToCart(long prodID, int requestedQuantity, long userID)
-    {
-        int? quantityInCart = GetCartItems(userID)
-                     ?.Find(item => item.ProductId == prodID)
-                     ?.Quantity;
 
-        if (quantityInCart is null) { quantityInCart = 0; }
+    //public bool CanAddToCart(long prodID, int requestedQuantity, string userID)
+    //{
+    //    int? quantityInCart = GetCartItems(userID)
+    //                 ?.Find(item => item.ProductId == prodID)
+    //                 ?.Quantity;
 
-        return quantityInCart + requestedQuantity <= _productService.FindById(prodID).StockQuantity;
-    }
+    //    if (quantityInCart is null) { quantityInCart = 0; }
+
+    //    return quantityInCart + requestedQuantity <= _productService.FindById(prodID).StockQuantity;
+    //}
+
+    //public List<CartItem> GetCartItems(string userID)
+    //{
+    //    return _cartRepository.GetByUserId(userID, trackChanges: true).Items;
+    //}
+
+    //public bool HasInCart(long prodID, string userID)
+    //{
+    //    return GetCartItems(userID)?.FirstOrDefault(item => item.ProductId == prodID) is not null;
+    //}
 }

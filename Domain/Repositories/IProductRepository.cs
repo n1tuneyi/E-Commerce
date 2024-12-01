@@ -1,10 +1,12 @@
 ﻿using Domain.Repositories;
+using Domain.Request.Product;
+using Domain.RequestFeatures;
 using Ecommerce.Domain.Entities;
 
 namespace Application.Repositories;
 
 public interface IProductRepository : IRepositoryBase<Product>
 {
-    Product? GetProduct(long prodId, bool trackChanges);
-    IEnumerable<Product> GetAllProducts(bool trackChanges);
+    Task<Product> GetProductAsync(Guid prodId, bool trackChanges);
+    Task<PagedList<Product>> GetAllProductsAsync(ProductParameters productParameters, bool trackChanges);
 }

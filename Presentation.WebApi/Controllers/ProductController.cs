@@ -1,11 +1,16 @@
-﻿using Ecommerce.Domain.Entities;
+﻿using Application.DTOs.Product;
+using Domain.Request.Product;
+using Ecommerce.Domain.Entities;
 using Ecommerce.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 
 namespace Presentation.WebApi.Controllers
 {
     [Route("api/products")]
     [ApiController]
+    [Authorize]
     public class ProductController : ControllerBase
     {
         private readonly ProductService _productService;
@@ -15,34 +20,43 @@ namespace Presentation.WebApi.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateProduct(Product product)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> CreateProduct(Product product)
         {
-            var addedProduct = _productService.Create(product);
+            var addedProduct = await _productService.CreateAsync(product);
 
             return Ok(addedProduct);
         }
 
         [HttpGet]
-        public IActionResult GetProducts()
+        public async Task<IActionResult> GetProducts([FromQuery] ProductParameters productParameters)
         {
-            var products = _productService.GetProducts();
-            return Ok(products);
+            var pagedResult = await _productService.GetProductsAsync(productParameters);
+            Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(pagedResult.metaData));
+            return Ok(pagedResult.products);
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetProduct(long id)
+        public async Task<IActionResult> GetProduct(Guid id)
         {
-            var product = _productService.FindById(id);
+            var product = await _productService.GetProductAsync(id);
             return Ok(product);
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteProduct(long id)
+        public async Task<IActionResult> DeleteProduct(Guid id)
         {
-            _productService.Remove(id);
+            await _productService.RemoveAsync(id);
 
             return NoContent();
         }
 
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> UpdateProduct(Guid id, ProductUpdateDto productToUpdate)
+        {
+            await _productService.UpdateProductAsync(id, productToUpdate);
+
+            return Ok();
+        }
     }
 }

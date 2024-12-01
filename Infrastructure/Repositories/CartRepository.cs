@@ -10,15 +10,15 @@ public class CartRepository : RepositoryBase<ShoppingCart>, ICartRepository
     public CartRepository(AppDbContext context) : base(context)
     { }
 
-    public ShoppingCart? GetByUserId(long userId, bool trackChanges)
+    public async Task<ShoppingCart> GetCartAsync(string userId, bool trackChanges)
     {
-        return FindByCondition(c => c.UserId == userId, trackChanges)
+        return await FindByCondition(c => c.UserId == userId, trackChanges)
                              .Include(c => c.Items)
                              .ThenInclude(i => i.Product)
-                             .SingleOrDefault();
+                             .SingleAsync();
     }
 
-    public void RemoveItem(CartItem item, ShoppingCart userCart)
+    public async Task RemoveItemAsync(CartItem item, ShoppingCart userCart)
     {
         bool softDelete = true;
 
@@ -28,12 +28,12 @@ public class CartRepository : RepositoryBase<ShoppingCart>, ICartRepository
         else
             _context.Items.Remove(item);
 
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
     }
 
-    public bool Exists(long userId)
+    public async Task<bool> Exists(string userId)
     {
-        return GetByUserId(userId, false) is not null;
+        return (await GetCartAsync(userId, false)) is not null;
     }
 
 }
