@@ -35,7 +35,6 @@ namespace Presentation.WebApi.MapperConfig
                 {
                     return srcMember != null;
                 }));
-
         }
     }
 }

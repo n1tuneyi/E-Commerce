@@ -1,13 +1,16 @@
-﻿using Application.Interfaces;
+﻿using Application.DTOs.Validators;
+using Application.Filters;
+using Application.Interfaces;
 using Application.Repositories;
 using Ecommerce.Services;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Infrastructure.Context;
 using Infrastructure.Logging;
 using Infrastructure.newRepositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-
 namespace Infrastructure.Configuration;
 
 public static class DependenciesRegistration
@@ -37,6 +40,17 @@ public static class DependenciesRegistration
     public static IServiceCollection ConfigureLogging(this IServiceCollection services)
     {
         return services.AddSingleton<ILoggerService, LoggerService>();
+    }
+
+    public static void AddValidators(this IServiceCollection services)
+    {
+        services.AddValidatorsFromAssemblyContaining<ProductUpdateDtoValidator>();
+        services.AddFluentValidationAutoValidation();
+    }
+
+    public static void AddFilters(this IServiceCollection services)
+    {
+        services.AddScoped<ValidationFilterAttribute>();
     }
 
 }

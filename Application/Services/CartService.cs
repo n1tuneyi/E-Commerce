@@ -2,7 +2,9 @@
 using Application.Interfaces;
 using Application.Repositories;
 using AutoMapper;
+using Domain.Errors;
 using Ecommerce.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Ecommerce.Services;
 
@@ -100,18 +102,19 @@ public class CartService
         await _cartRepository.RemoveItemAsync(removedItem, userCart);
     }
 
-
-    public async Task<CartItem> UpdateItemAsync(Guid prodID, int quantity, string userID)
+    public async Task<CartItem> UpdateItemAsync(Guid prodId, int quantity, string userID)
     {
+        if (quantity <= 0)
+            throw new InvalidRangeBadRequestException();
+
         ShoppingCart userCart = await _cartRepository.GetCartAsync(userID, trackChanges: true);
 
-        CartItem? updatedItem = userCart.Items.Find(item => item.ProductId == prodID);
+        CartItem? updatedItem = userCart.Items.Find(item => item.ProductId == prodId);
 
         if (updatedItem is null)
-            throw new Exception("Item not found!");
+            throw new ItemNotFoundException(prodId);
 
-
-        Product itemProduct = await _productService.GetProductAsync(prodID);
+        Product itemProduct = await _productService.GetProductAsync(prodId);
 
         userCart.TotalPrice -= updatedItem.TotalPrice;
 
@@ -129,6 +132,13 @@ public class CartService
         await _cartRepository.UpdateAsync(userCart);
 
         return updatedItem;
+    }
+
+    public async Task ClearCart(string userId)
+    {
+        var cart = await _cartRepository.FindByCondition(c => c.UserId == userId, true).SingleAsync();
+        cart.Items.Clear();
+        cart.TotalPrice = 0;
     }
 
 

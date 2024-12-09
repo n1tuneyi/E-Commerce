@@ -38,6 +38,10 @@ public abstract class RepositoryBase<T> : IRepositoryBase<T> where T : class
         return trackChanges ? _context.Set<T>().Where(expression) : _context.Set<T>().Where(expression).AsNoTracking();
     }
 
+    public async Task Save()
+    {
+        await _context.SaveChangesAsync();
+    }
 
     public async Task<T> UpdateAsync(T entity)
     {

@@ -39,7 +39,6 @@ public class ProductService
         if (!productParameters.ValidPriceRange)
             throw new InvalidRangeBadRequestException();
 
-
         var products = _mapper.Map<IEnumerable<Product>>(productsWithMetaData);
 
         return (products, metaData: productsWithMetaData.MetaData);
@@ -65,17 +64,15 @@ public class ProductService
         return await _repository.DeleteAsync(RemovedProduct);
     }
 
-
-    // Product Consumed by a customer
-    public async Task ConsumeProductStockAsync(Guid productId, int requestedQuantity)
+    public void DeductStock(List<OrderItem> items)
     {
-        Product product = await GetProductAsync(productId);
+        foreach (var item in items)
+        {
+            if (item.Product.StockQuantity < item.Quantity)
+                throw new NotEnoughStockException();
 
-        product.StockQuantity -= requestedQuantity;
-
-        _loggerService.LogInformation($"Product#{productId} stock decreased by {requestedQuantity} amount");
-
-        await _repository.UpdateAsync(product);
+            item.Product.StockQuantity -= item.Quantity;
+        }
     }
 
     public async Task UpdateProductAsync(Guid prodId, ProductUpdateDto productToUpdate)

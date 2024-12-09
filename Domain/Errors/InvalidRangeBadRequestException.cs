@@ -2,7 +2,7 @@
 
 public class InvalidRangeBadRequestException : BadRequestException
 {
-    public InvalidRangeBadRequestException() : base("Invalid Price Range!")
+    public InvalidRangeBadRequestException() : base("Invalid Range!")
     {
     }
 }

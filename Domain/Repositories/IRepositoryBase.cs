@@ -9,4 +9,6 @@ public interface IRepositoryBase<TEntity>
     Task<TEntity> CreateAsync(TEntity entity);
     Task<TEntity> DeleteAsync(TEntity entity);
     Task<TEntity> UpdateAsync(TEntity entity);
+
+    Task Save();
 }

@@ -42,5 +42,13 @@ namespace Presentation.WebApi.Controllers
 
             return NoContent();
         }
+
+        [HttpPatch("items/{prodId}")]
+        public async Task<IActionResult> UpdateItemAsync(Guid prodId, CartItemUpdateDTO item)
+        {
+            await _cartService.UpdateItemAsync(prodId, item.quantity, User.GetUserId());
+
+            return Ok();
+        }
     }
 }

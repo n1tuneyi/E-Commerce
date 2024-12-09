@@ -3,6 +3,7 @@ using Application.DTOs.Order;
 using Application.Interfaces;
 using Application.Repositories;
 using AutoMapper;
+using Domain.Errors;
 using Ecommerce.Domain.Entities;
 
 namespace Ecommerce.Services;
@@ -35,7 +36,7 @@ public class OrderService
         CartDTO cart = await _cartService.GetCartAsync(userId);
 
         if (cart.Items.Count == 0)
-            throw new Exception("No Items in cart");
+            throw new NoCartItemsFoundException();
 
         List<OrderItem> orderItems = _mapper.Map<List<OrderItem>>(cart.Items);
 
@@ -51,13 +52,13 @@ public class OrderService
 
         await _orderRepository.CreateAsync(order);
 
+        _productService.DeductStock(orderItems);
+
         var orderDto = _mapper.Map<OrderDTO>(order);
 
-        foreach (var item in cart.Items)
-        {
-            await _productService.ConsumeProductStockAsync(item.ProductId, item.Quantity);
-            await _cartService.RemoveFromCartAsync(item.ProductId, userId);
-        }
+        await _cartService.ClearCart(userId);
+
+        await _orderRepository.Save();
 
         return orderDto;
     }
@@ -67,7 +68,7 @@ public class OrderService
         var orders = await _orderRepository.GetOrdersAsync(userId, trackChanges: false);
 
         if (orders.Count() == 0)
-            throw new Exception("No Orders yet.");
+            throw new NoOrdersFoundException();
 
         var ordersDto = _mapper.Map<IEnumerable<OrderDTO>>(orders);
 

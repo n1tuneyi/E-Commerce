@@ -1,0 +1,2 @@
+2024-12-09 16:03:44.477 +02:00 [INF] Product#00000000-0000-0000-0000-000000000000 just got added to stock with 0 quantity and price:$37,444.00
+2024-12-09 17:10:57.388 +02:00 [INF] Product#00000000-0000-0000-0000-000000000000 just got added to stock with 0 quantity and price:$0.00

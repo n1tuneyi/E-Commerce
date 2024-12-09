@@ -1,0 +1,12 @@
+2024-12-01 17:22:13.450 +02:00 [INF] User#a8e3d0cb-5800-41a7-a244-f87371cf6cd0 added 1 amount of Product#b35cfc8f-b2b2-49fe-6367-08dd116ffc39 with total price of $35,000.00
+2024-12-01 17:22:37.473 +02:00 [INF] User#a8e3d0cb-5800-41a7-a244-f87371cf6cd0 added 10 amount of Product#1359d32e-78a7-4299-a015-0dd12fba5013 with total price of $80.00
+2024-12-01 17:22:56.482 +02:00 [INF] UserID 0 placed an order of 2 items and cost $35,080.00
+2024-12-01 17:26:38.892 +02:00 [INF] UserID 0 placed an order of 2 items and cost $35,080.00
+2024-12-01 17:35:39.224 +02:00 [INF] User#a8e3d0cb-5800-41a7-a244-f87371cf6cd0 added 10 amount of Product#1359d32e-78a7-4299-a015-0dd12fba5013 with total price of $80.00
+2024-12-01 17:38:09.627 +02:00 [INF] UserID 0 placed an order of 1 items and cost $80.00
+2024-12-01 17:39:00.537 +02:00 [INF] User#a8e3d0cb-5800-41a7-a244-f87371cf6cd0 added 1 amount of Product#1359d32e-78a7-4299-a015-0dd12fba5013 with total price of $8.00
+2024-12-01 17:39:06.043 +02:00 [INF] UserID 0 placed an order of 1 items and cost $8.00
+2024-12-01 17:40:15.235 +02:00 [INF] UserID 0 placed an order of 1 items and cost $8.00
+2024-12-01 17:41:03.067 +02:00 [INF] User#a8e3d0cb-5800-41a7-a244-f87371cf6cd0 added 1 amount of Product#1359d32e-78a7-4299-a015-0dd12fba5013 with total price of $8.00
+2024-12-01 17:41:36.130 +02:00 [INF] UserID 0 placed an order of 1 items and cost $8.00
+2024-12-01 17:47:35.276 +02:00 [INF] User#a8e3d0cb-5800-41a7-a244-f87371cf6cd0 added 1 amount of Product#1359d32e-78a7-4299-a015-0dd12fba5013 with total price of $8.00

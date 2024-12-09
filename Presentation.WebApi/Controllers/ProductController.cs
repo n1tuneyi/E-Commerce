@@ -44,6 +44,8 @@ namespace Presentation.WebApi.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
+
         public async Task<IActionResult> DeleteProduct(Guid id)
         {
             await _productService.RemoveAsync(id);
@@ -52,6 +54,8 @@ namespace Presentation.WebApi.Controllers
         }
 
         [HttpPatch("{id}")]
+        [Authorize(Roles = "Admin")]
+        //[ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> UpdateProduct(Guid id, ProductUpdateDto productToUpdate)
         {
             await _productService.UpdateProductAsync(id, productToUpdate);
